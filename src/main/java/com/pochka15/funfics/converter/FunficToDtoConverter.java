@@ -1,4 +1,4 @@
-package com.pochka15.funfics.config.converter;
+package com.pochka15.funfics.converter;
 
 import com.pochka15.funfics.domain.funfic.Funfic;
 import com.pochka15.funfics.dto.FunficDto;
