@@ -26,6 +26,10 @@ public class Funfic {
     @Builder.Default
     private Set<String> tags = Set.of();
 
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "funfic_id", referencedColumnName = "id")
+    private FunficContent funficContent;
+
     private String name;
     private String description;
     private float rating;

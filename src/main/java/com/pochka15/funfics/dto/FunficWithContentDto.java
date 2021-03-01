@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Builder
 @Data
-public class FunficDto {
+public class FunficWithContentDto {
     private Long id;
 
     private Genre genre;
@@ -19,4 +19,6 @@ public class FunficDto {
     private String name;
     private String description;
     private float rating;
+    private String content;
 }
+
