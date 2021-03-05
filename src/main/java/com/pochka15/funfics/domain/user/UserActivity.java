@@ -17,6 +17,7 @@ import java.util.Objects;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @Setter
 @Getter
+@ToString
 public class UserActivity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -29,15 +30,6 @@ public class UserActivity {
     private LocalDateTime lastLoginDate;
 
     @Override
-    public String toString() {
-        return "UserActivity{" +
-                "id=" + id +
-                ", registrationDate=" + registrationDate +
-                ", lastLoginDate=" + lastLoginDate +
-                '}';
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -47,6 +39,6 @@ public class UserActivity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return 42;
     }
 }

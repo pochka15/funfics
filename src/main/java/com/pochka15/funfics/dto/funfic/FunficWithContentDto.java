@@ -1,4 +1,4 @@
-package com.pochka15.funfics.dto;
+package com.pochka15.funfics.dto.funfic;
 
 import com.pochka15.funfics.domain.funfic.Genre;
 import lombok.Builder;
@@ -6,6 +6,9 @@ import lombok.Data;
 
 import java.util.Set;
 
+/**
+ * Dto containing the main funfic info and it's content
+ */
 @Builder
 @Data
 public class FunficWithContentDto {

@@ -1,11 +1,17 @@
 package com.pochka15.funfics.config;
 
+import com.pochka15.funfics.config.filter.JwtRequestFilter;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.sql.DataSource;
 
@@ -15,29 +21,28 @@ import javax.sql.DataSource;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final PasswordEncoder passwordEncoder;
     private final DataSource datasource;
+    private final JwtRequestFilter jwtRequestFilter;
 
     public SecurityConfig(DataSource datasource,
-                          PasswordEncoder passwordEncoder) {
+                          PasswordEncoder passwordEncoder,
+                          JwtRequestFilter jwtRequestFilter) {
         this.datasource = datasource;
         this.passwordEncoder = passwordEncoder;
+        this.jwtRequestFilter = jwtRequestFilter;
     }
 
 
     @Override
     protected void configure(HttpSecurity security) throws Exception {
         security.authorizeRequests()
-//                .antMatchers("/register").permitAll()
-//                .anyRequest().authenticated()
-                .anyRequest().permitAll()
-                .and()
-                .formLogin()
-//                .loginPage("/login")
-                .permitAll()
-                .and()
-                .logout()
-                .permitAll()
-                .and()
-                .csrf().disable();
+                .antMatchers(HttpMethod.GET, "/funfics", "/funfic").permitAll()
+                .antMatchers(HttpMethod.POST, "/register", "/login").permitAll()
+                .anyRequest().authenticated()
+                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and().exceptionHandling()
+                .and().cors()
+                .and().csrf().disable();
+        security.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override
@@ -49,4 +54,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authoritiesByUsernameQuery("select u.name, ur.roles from user u inner join user_role ur on u.id = ur.user_id where u.name=?");
     }
 
+
+    @Override
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 }

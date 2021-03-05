@@ -30,7 +30,7 @@ public class User {
     @Builder.Default
     private Set<Role> roles = Set.of();
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "actiity_id")
     @Builder.Default
     private UserActivity activity = new UserActivity();
@@ -40,11 +40,8 @@ public class User {
         return "User{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", password='" + password + '\'' +
                 ", isEnabled=" + isEnabled +
-                ", email='" + email + '\'' +
-                ", roles=" + roles +
-                ", activity=" + activity +
+                ", email='" + email +
                 '}';
     }
 
@@ -53,11 +50,11 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return isEnabled == user.isEnabled && Objects.equals(id, user.id) && Objects.equals(name, user.name) && Objects.equals(password, user.password) && Objects.equals(email, user.email) && Objects.equals(roles, user.roles) && Objects.equals(activity, user.activity);
+        return Objects.equals(id, user.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return 42;
     }
 }

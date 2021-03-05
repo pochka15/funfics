@@ -1,4 +1,4 @@
-package com.pochka15.funfics.dto;
+package com.pochka15.funfics.dto.funfic;
 
 import com.pochka15.funfics.domain.funfic.Genre;
 import lombok.Builder;
