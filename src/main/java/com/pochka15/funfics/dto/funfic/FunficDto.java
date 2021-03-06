@@ -18,5 +18,6 @@ public class FunficDto {
 
     private String name;
     private String description;
+    private String author;
     private float rating;
 }

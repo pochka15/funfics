@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface FunficsService {
     List<FunficDto> fetchAllFunfics();
 
-    Funfic saveFunfic(FunficForm form);
+    boolean saveFunfic(FunficForm form, String author);
 
     Optional<FunficWithContentDto> fetchFunficById(Long id);
 }

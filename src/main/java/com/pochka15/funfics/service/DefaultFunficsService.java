@@ -4,6 +4,8 @@ import com.pochka15.funfics.converter.funfic.FunficFormToFunficConverter;
 import com.pochka15.funfics.converter.funfic.FunficToDtoConverter;
 import com.pochka15.funfics.converter.funfic.FunficToFunficWithContentConverter;
 import com.pochka15.funfics.domain.funfic.Funfic;
+import com.pochka15.funfics.domain.user.User;
+import com.pochka15.funfics.dto.UserDto;
 import com.pochka15.funfics.dto.funfic.FunficDto;
 import com.pochka15.funfics.dto.funfic.FunficForm;
 import com.pochka15.funfics.dto.funfic.FunficWithContentDto;
@@ -18,15 +20,18 @@ import java.util.stream.StreamSupport;
 @Service
 public class DefaultFunficsService implements FunficsService {
     private final FunficRepository funficRepository;
+    private final UserManagementService userManagementService;
     private final FunficToDtoConverter funficToDtoConverter;
     private final FunficFormToFunficConverter funficFormToFunficConverter;
     private final FunficToFunficWithContentConverter funficToFunficWithContentConverter;
 
     public DefaultFunficsService(FunficRepository funficRepository,
+                                 UserManagementService userManagementService,
                                  FunficToDtoConverter funficToDtoConverter,
                                  FunficFormToFunficConverter funficFormToFunficConverter,
                                  FunficToFunficWithContentConverter funficToFunficWithContentConverter) {
         this.funficRepository = funficRepository;
+        this.userManagementService = userManagementService;
         this.funficToDtoConverter = funficToDtoConverter;
         this.funficFormToFunficConverter = funficFormToFunficConverter;
         this.funficToFunficWithContentConverter = funficToFunficWithContentConverter;
@@ -40,8 +45,14 @@ public class DefaultFunficsService implements FunficsService {
     }
 
     @Override
-    public Funfic saveFunfic(FunficForm form) {
-        return funficRepository.save(funficFormToFunficConverter.convert(form));
+    public boolean saveFunfic(FunficForm form, String author) {
+        final Funfic funfic = funficFormToFunficConverter.convert(form);
+        final Optional<UserDto> found = userManagementService.findByName(author);
+        if (found.isPresent()) {
+            funfic.setAuthor(User.builder().id(found.get().getId()).build());
+            funficRepository.save(funfic);
+        }
+        return found.isPresent();
     }
 
     @Override

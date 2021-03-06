@@ -16,6 +16,7 @@ public class FunficToDtoConverter implements Converter<Funfic, FunficDto> {
                 .tags(source.getTags())
                 .id(source.getId())
                 .genre(source.getGenre())
+                .author(source.getAuthor().getName())
                 .build();
     }
 }
