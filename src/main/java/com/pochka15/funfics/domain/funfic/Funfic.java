@@ -1,6 +1,7 @@
 package com.pochka15.funfics.domain.funfic;
 
 
+import com.pochka15.funfics.domain.user.User;
 import lombok.*;
 
 import javax.persistence.*;
@@ -29,6 +30,10 @@ public class Funfic {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "funfic_id", referencedColumnName = "id")
     private FunficContent funficContent;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id", referencedColumnName = "id")
+    private User author;
 
     private String name;
     private String description;
