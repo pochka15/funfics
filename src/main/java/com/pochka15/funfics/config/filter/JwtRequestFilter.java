@@ -1,11 +1,11 @@
 package com.pochka15.funfics.config.filter;
 
 import com.pochka15.funfics.service.DbUserDetailsService;
-import com.pochka15.funfics.utils.JwtUtils;
+import com.pochka15.funfics.service.DefaultJwtService;
+import com.pochka15.funfics.service.JwtService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,12 +27,12 @@ import java.util.Optional;
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
-    private final JwtUtils jwtUtils;
+    private final JwtService defaultJwtService;
 
     public JwtRequestFilter(DbUserDetailsService userDetailsService,
-                            JwtUtils jwtUtils) {
+                            DefaultJwtService defaultJwtService) {
         this.userDetailsService = userDetailsService;
-        this.jwtUtils = jwtUtils;
+        this.defaultJwtService = defaultJwtService;
     }
 
 
@@ -65,10 +65,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         return token;
     }
 
-        private String extractUsername(String authHeader) {
+    private String extractUsername(String authHeader) {
         final String bearerPart = "Bearer ";
         try {
-            return jwtUtils.extractUsername(authHeader.substring(bearerPart.length()));
+            return defaultJwtService.extractUsername(authHeader.substring(bearerPart.length()));
         } catch (MalformedJwtException | SignatureException | ExpiredJwtException e) {
             e.printStackTrace();
         }

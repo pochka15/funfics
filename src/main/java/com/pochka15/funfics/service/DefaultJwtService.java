@@ -1,4 +1,4 @@
-package com.pochka15.funfics.utils;
+package com.pochka15.funfics.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -12,11 +12,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import static org.apache.commons.lang3.time.DateUtils.addHours;
+
 @Component
-public class JwtUtils {
+public class DefaultJwtService implements JwtService {
     @Value("${jwt.secret}")
     private String SECRET_KEY;
 
+    @Override
     public String extractUsername(String token)
             throws io.jsonwebtoken.MalformedJwtException,
             io.jsonwebtoken.SignatureException,
@@ -24,6 +27,7 @@ public class JwtUtils {
         return extractClaim(token, Claims::getSubject);
     }
 
+    @Override
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver)
             throws io.jsonwebtoken.MalformedJwtException,
             io.jsonwebtoken.SignatureException,
@@ -38,19 +42,18 @@ public class JwtUtils {
         return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
     }
 
+    @Override
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         return createToken(claims, userDetails.getUsername());
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
-        final int hourToMills = 1000 * 60 * 60;
-        final int tenHours = hourToMills * 10;
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + tenHours))
+                .setExpiration(addHours(new Date(System.currentTimeMillis()), 10))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
     }
 }

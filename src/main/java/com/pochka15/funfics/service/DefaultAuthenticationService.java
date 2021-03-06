@@ -2,9 +2,7 @@ package com.pochka15.funfics.service;
 
 import com.pochka15.funfics.dto.AuthenticationResult;
 import com.pochka15.funfics.dto.form.LoginForm;
-import com.pochka15.funfics.utils.JwtUtils;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,15 +12,15 @@ import org.springframework.stereotype.Service;
 public class DefaultAuthenticationService implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
-    private final JwtUtils jwtUtils;
+    private final JwtService defaultJwtService;
 
     public DefaultAuthenticationService(
             AuthenticationManager authenticationManager,
             DbUserDetailsService userDetailsService,
-            JwtUtils jwtUtils) {
+            DefaultJwtService defaultJwtService) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
-        this.jwtUtils = jwtUtils;
+        this.defaultJwtService = defaultJwtService;
     }
 
     @Override
@@ -34,7 +32,7 @@ public class DefaultAuthenticationService implements AuthenticationService {
     }
 
     private String generateJwtToken(String username) {
-        return jwtUtils.generateToken(
+        return defaultJwtService.generateToken(
                 userDetailsService.loadUserByUsername(username));
     }
 }
