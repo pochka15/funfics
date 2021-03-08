@@ -1,7 +1,7 @@
 package com.pochka15.funfics.service;
 
 import com.pochka15.funfics.converter.UserToUserDetailsConverter;
-import com.pochka15.funfics.repository.UserRepository;
+import com.pochka15.funfics.repository.jpa.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

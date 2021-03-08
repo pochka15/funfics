@@ -1,4 +1,4 @@
-package com.pochka15.funfics.repository;
+package com.pochka15.funfics.repository.jpa;
 
 import com.pochka15.funfics.domain.user.User;
 import org.springframework.data.repository.CrudRepository;

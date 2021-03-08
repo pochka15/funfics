@@ -5,7 +5,7 @@ import com.pochka15.funfics.converter.UserToUserDtoConverter;
 import com.pochka15.funfics.domain.user.User;
 import com.pochka15.funfics.dto.UserDto;
 import com.pochka15.funfics.dto.form.CredentialsForm;
-import com.pochka15.funfics.repository.UserRepository;
+import com.pochka15.funfics.repository.jpa.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

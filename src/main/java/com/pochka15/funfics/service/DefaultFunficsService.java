@@ -9,7 +9,7 @@ import com.pochka15.funfics.dto.UserDto;
 import com.pochka15.funfics.dto.funfic.FunficDto;
 import com.pochka15.funfics.dto.funfic.FunficForm;
 import com.pochka15.funfics.dto.funfic.FunficWithContentDto;
-import com.pochka15.funfics.repository.FunficRepository;
+import com.pochka15.funfics.repository.jpa.FunficRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
