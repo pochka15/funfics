@@ -9,6 +9,10 @@ import javax.validation.constraints.NotNull;
 import java.util.Objects;
 import java.util.Set;
 
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+
+
 @Entity
 @Builder
 @NoArgsConstructor
@@ -16,6 +20,7 @@ import java.util.Set;
 @Setter
 @Getter
 @ToString
+@Indexed
 public class Funfic {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -37,7 +42,9 @@ public class Funfic {
     @JoinColumn(name = "author_id", referencedColumnName = "id")
     private User author;
 
+    @FullTextField
     private String name;
+
     private String description;
     private float rating;
 

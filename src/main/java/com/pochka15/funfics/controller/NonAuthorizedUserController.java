@@ -4,9 +4,6 @@ import com.pochka15.funfics.dto.funfic.FunficDto;
 import com.pochka15.funfics.dto.funfic.FunficWithContentDto;
 import com.pochka15.funfics.service.FunficsService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,8 +19,7 @@ import java.util.Optional;
 public class NonAuthorizedUserController {
     private final FunficsService funficsService;
 
-    public NonAuthorizedUserController(
-            FunficsService funficsService) {
+    public NonAuthorizedUserController(FunficsService funficsService) {
         this.funficsService = funficsService;
     }
 
@@ -40,5 +36,13 @@ public class NonAuthorizedUserController {
         final Optional<FunficWithContentDto> fetched = funficsService.fetchFunficById(id);
         if (fetched.isPresent()) return fetched.get();
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Funfic with with the id " + id + " is Not Found");
+    }
+
+    @GetMapping("/search")
+    public List<String> search(@RequestParam("name") String name) {
+//        return funficsSearchRepository.findByName(name).stream()
+//                .map(Funfic::getName)
+//                .collect(Collectors.toList());
+        return List.of();
     }
 }
