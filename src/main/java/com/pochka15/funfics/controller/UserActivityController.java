@@ -7,7 +7,6 @@ import com.pochka15.funfics.service.AuthenticationService;
 import com.pochka15.funfics.service.UserManagementService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;

@@ -4,11 +4,13 @@ import com.pochka15.funfics.converter.CredentialsToUserConverter;
 import com.pochka15.funfics.converter.UserToUserDtoConverter;
 import com.pochka15.funfics.domain.user.User;
 import com.pochka15.funfics.dto.UserDto;
+import com.pochka15.funfics.dto.form.ChangePasswordForm;
 import com.pochka15.funfics.dto.form.CredentialsForm;
 import com.pochka15.funfics.repository.jpa.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
@@ -32,6 +34,21 @@ public class DefaultUserManagementService implements UserManagementService {
     @Override
     public Optional<UserDto> findByName(String name) {
         return userRepo.findByName(name).map(userToUserDtoConverter::convert);
+    }
+
+    @Override
+    @Transactional
+    public boolean changeUserPassword(String username, ChangePasswordForm form) {
+        var foundUser = userRepo.findByName(username);
+        return foundUser.isPresent()
+                && passwordEncoder.matches(form.getCurrentPassword(), foundUser.get().getPassword())
+                && updatePassword(foundUser.get(), form.getNewPassword());
+    }
+
+
+    private boolean updatePassword(User user, String newPassword) {
+        user.setPassword(passwordEncoder.encode(newPassword));
+        return true;
     }
 
     @Override
