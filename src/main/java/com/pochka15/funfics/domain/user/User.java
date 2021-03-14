@@ -1,8 +1,10 @@
 package com.pochka15.funfics.domain.user;
 
+import com.pochka15.funfics.domain.funfic.Funfic;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -34,6 +36,10 @@ public class User {
     @JoinColumn(name = "actiity_id")
     @Builder.Default
     private UserActivity activity = new UserActivity();
+
+    @OneToMany(mappedBy = "author", orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<Funfic> funfics = List.of();
 
     @Override
     public String toString() {

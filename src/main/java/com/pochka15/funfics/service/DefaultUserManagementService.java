@@ -1,7 +1,7 @@
 package com.pochka15.funfics.service;
 
-import com.pochka15.funfics.converter.CredentialsToUserConverter;
-import com.pochka15.funfics.converter.UserToUserDtoConverter;
+import com.pochka15.funfics.converter.users.CredentialsToUserConverter;
+import com.pochka15.funfics.converter.users.UserToUserDtoConverter;
 import com.pochka15.funfics.domain.user.User;
 import com.pochka15.funfics.dto.UserDto;
 import com.pochka15.funfics.dto.form.ChangePasswordForm;

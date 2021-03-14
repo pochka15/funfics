@@ -1,5 +1,6 @@
 package com.pochka15.funfics.dto.form;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pochka15.funfics.dto.form.validator.UsernameIsFree;
 import lombok.Data;
 
@@ -15,10 +16,13 @@ public class CredentialsForm {
     private String username;
 
     @NotEmpty(message = "Password should not be empty")
-    @Size(max = 64, message = "Password length should be <= 64")
+    @Size(max = 64, min = 1, message = "Password length should be: 1 <= length <= 64")
     private String password;
 
     @NotEmpty(message = "Email should not be empty")
     @Email(message = "Email should be in correct form")
     private String email;
+
+    @JsonProperty("isAdmin")
+    private boolean isAdmin;
 }

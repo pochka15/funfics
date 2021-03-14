@@ -1,4 +1,4 @@
-package com.pochka15.funfics.converter;
+package com.pochka15.funfics.converter.users;
 
 import com.pochka15.funfics.domain.user.Role;
 import com.pochka15.funfics.domain.user.User;
@@ -18,7 +18,7 @@ public class CredentialsToUserConverter implements Converter<CredentialsForm, Us
                 .name(source.getUsername())
                 .password(source.getPassword())
                 .email(source.getEmail())
-                .roles(Collections.singleton(Role.USER))
+                .roles(Collections.singleton(source.isAdmin() ? Role.ADMIN : Role.USER))
                 .build();
     }
 }
