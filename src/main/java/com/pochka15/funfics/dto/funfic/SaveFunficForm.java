@@ -7,7 +7,7 @@ import java.util.Set;
 
 
 @Data
-public class NewFunficForm {
+public class SaveFunficForm {
     private Set<String> tags = Set.of();
     private String name;
     private String description;

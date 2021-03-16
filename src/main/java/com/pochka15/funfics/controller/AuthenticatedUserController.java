@@ -3,7 +3,10 @@ package com.pochka15.funfics.controller;
 import com.pochka15.funfics.dto.form.ChangePasswordForm;
 import com.pochka15.funfics.dto.form.DeleteFunficsForm;
 import com.pochka15.funfics.dto.funfic.FunficDto;
-import com.pochka15.funfics.dto.funfic.NewFunficForm;
+import com.pochka15.funfics.dto.funfic.SaveFunficForm;
+import com.pochka15.funfics.dto.funfic.UpdateFunficForm;
+import com.pochka15.funfics.exceptions.FunficDoesntExist;
+import com.pochka15.funfics.exceptions.IncorrectAuthor;
 import com.pochka15.funfics.service.FunficsService;
 import com.pochka15.funfics.service.UserManagementService;
 import org.springframework.http.ResponseEntity;
@@ -30,10 +33,17 @@ public class AuthenticatedUserController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<?> saveFunfic(@RequestBody NewFunficForm form, Principal principal) {
+    public ResponseEntity<?> saveFunfic(@RequestBody SaveFunficForm form, Principal principal) {
         return funficsService.saveFunfic(form, principal.getName())
                 ? ResponseEntity.ok().build()
                 : ResponseEntity.badRequest().build();
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<?> updateFunfic(@RequestBody UpdateFunficForm form, Principal principal)
+            throws IncorrectAuthor, FunficDoesntExist {
+        funficsService.updateFunfic(form, principal.getName());
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/password")

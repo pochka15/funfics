@@ -2,7 +2,10 @@ package com.pochka15.funfics.service;
 
 import com.pochka15.funfics.dto.funfic.FunficDto;
 import com.pochka15.funfics.dto.funfic.FunficWithContentDto;
-import com.pochka15.funfics.dto.funfic.NewFunficForm;
+import com.pochka15.funfics.dto.funfic.SaveFunficForm;
+import com.pochka15.funfics.dto.funfic.UpdateFunficForm;
+import com.pochka15.funfics.exceptions.FunficDoesntExist;
+import com.pochka15.funfics.exceptions.IncorrectAuthor;
 
 import java.util.Collection;
 import java.util.List;
@@ -14,7 +17,7 @@ public interface FunficsService {
     /**
      * @return true on success otherwise false
      */
-    boolean saveFunfic(NewFunficForm form, String authorName);
+    boolean saveFunfic(SaveFunficForm form, String authorName);
 
     Optional<FunficWithContentDto> fetchFunficById(Long id);
 
@@ -24,4 +27,6 @@ public interface FunficsService {
      * @return true on success otherwise false
      */
     boolean deleteFunfics(String authorName, Collection<Long> funficIds);
+
+    void updateFunfic(UpdateFunficForm form, String username) throws FunficDoesntExist, IncorrectAuthor;
 }
