@@ -5,6 +5,7 @@ import com.pochka15.funfics.domain.user.User;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface FunficsRepository extends CrudRepository<Funfic, Long> {
     List<Funfic> findByAuthor(User author);

@@ -4,14 +4,19 @@ import com.pochka15.funfics.converter.funfic.FunficFormToFunficConverter;
 import com.pochka15.funfics.converter.funfic.FunficToDtoConverter;
 import com.pochka15.funfics.converter.funfic.FunficToFunficWithContentConverter;
 import com.pochka15.funfics.domain.funfic.Funfic;
+import com.pochka15.funfics.domain.funfic.FunficContent;
 import com.pochka15.funfics.domain.user.User;
 import com.pochka15.funfics.dto.UserDto;
 import com.pochka15.funfics.dto.funfic.FunficDto;
+import com.pochka15.funfics.dto.funfic.SaveFunficForm;
 import com.pochka15.funfics.dto.funfic.FunficWithContentDto;
-import com.pochka15.funfics.dto.funfic.NewFunficForm;
+import com.pochka15.funfics.dto.funfic.UpdateFunficForm;
+import com.pochka15.funfics.exceptions.FunficDoesntExist;
+import com.pochka15.funfics.exceptions.IncorrectAuthor;
 import com.pochka15.funfics.repository.jpa.FunficsRepository;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -46,10 +51,10 @@ public class DefaultFunficsService implements FunficsService {
     }
 
     @Override
-    public boolean saveFunfic(NewFunficForm form, String authorName) {
-        final Funfic funfic = funficFormToFunficConverter.convert(form);
+    public boolean saveFunfic(SaveFunficForm form, String authorName) {
         final Optional<UserDto> found = userManagementService.findByName(authorName);
         if (found.isPresent()) {
+            Funfic funfic = funficFormToFunficConverter.convert(form);
             funfic.setAuthor(User.builder().id(found.get().getId()).build());
             funficsRepository.save(funfic);
             return true;
@@ -72,6 +77,25 @@ public class DefaultFunficsService implements FunficsService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    @Transactional
+    public void updateFunfic(UpdateFunficForm form, String username) throws FunficDoesntExist, IncorrectAuthor {
+        final Optional<Funfic> foundFunfic = funficsRepository.findById(form.getId());
+        if (foundFunfic.isPresent()) {
+            boolean sameAuthors = foundFunfic.get().getAuthor().getName().equals(username);
+            if (sameAuthors) updateFunfic(foundFunfic.get(), form);
+            else throw new IncorrectAuthor();
+        } else throw new FunficDoesntExist();
+    }
+
+    private void updateFunfic(Funfic funfic, UpdateFunficForm form) {
+        funfic.setFunficContent(new FunficContent(form.getContent()));
+        funfic.setDescription(form.getDescription());
+        funfic.setGenre(form.getGenre());
+        funfic.setName(form.getName());
+        funfic.setTags(form.getTags());
     }
 
     private boolean checkIfIsAuthorOfGivenFunfics(String author, Collection<Long> ids) {

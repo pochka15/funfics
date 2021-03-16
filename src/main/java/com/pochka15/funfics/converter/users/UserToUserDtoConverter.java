@@ -1,4 +1,4 @@
-package com.pochka15.funfics.converter;
+package com.pochka15.funfics.converter.users;
 
 import com.pochka15.funfics.domain.user.User;
 import com.pochka15.funfics.dto.UserDto;

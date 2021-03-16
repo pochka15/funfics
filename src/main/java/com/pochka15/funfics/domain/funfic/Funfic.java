@@ -5,7 +5,6 @@ import com.pochka15.funfics.domain.user.User;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Objects;
 import java.util.Set;
 
@@ -37,9 +36,8 @@ public class Funfic {
     @JoinColumn(name = "funfic_id", referencedColumnName = "id")
     private FunficContent funficContent;
 
-    @NotNull
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "author_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id", referencedColumnName = "id", nullable = false)
     private User author;
 
     @FullTextField

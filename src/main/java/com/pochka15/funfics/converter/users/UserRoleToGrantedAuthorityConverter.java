@@ -1,4 +1,4 @@
-package com.pochka15.funfics.converter;
+package com.pochka15.funfics.converter.users;
 
 import com.pochka15.funfics.domain.user.Role;
 import org.springframework.core.convert.converter.Converter;
