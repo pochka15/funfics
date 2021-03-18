@@ -1,4 +1,4 @@
-package com.pochka15.funfics.service;
+package com.pochka15.funfics.service.users;
 
 import com.pochka15.funfics.dto.UserDto;
 import com.pochka15.funfics.dto.form.ChangePasswordForm;

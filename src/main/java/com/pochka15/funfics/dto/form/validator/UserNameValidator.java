@@ -1,6 +1,6 @@
 package com.pochka15.funfics.dto.form.validator;
 
-import com.pochka15.funfics.service.UserManagementService;
+import com.pochka15.funfics.service.users.UserManagementService;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

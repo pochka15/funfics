@@ -1,4 +1,4 @@
-package com.pochka15.funfics.service;
+package com.pochka15.funfics.service.funfics;
 
 import com.pochka15.funfics.converter.funfic.FunficFormToFunficConverter;
 import com.pochka15.funfics.converter.funfic.FunficToDtoConverter;
@@ -14,6 +14,7 @@ import com.pochka15.funfics.dto.funfic.UpdateFunficForm;
 import com.pochka15.funfics.exceptions.FunficDoesntExist;
 import com.pochka15.funfics.exceptions.IncorrectAuthor;
 import com.pochka15.funfics.repository.jpa.FunficsRepository;
+import com.pochka15.funfics.service.users.UserManagementService;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;

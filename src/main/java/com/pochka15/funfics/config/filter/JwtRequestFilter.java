@@ -1,6 +1,6 @@
 package com.pochka15.funfics.config.filter;
 
-import com.pochka15.funfics.service.DbUserDetailsService;
+import com.pochka15.funfics.service.users.DbUserDetailsService;
 import com.pochka15.funfics.service.DefaultJwtService;
 import com.pochka15.funfics.service.JwtService;
 import io.jsonwebtoken.ExpiredJwtException;

@@ -2,7 +2,7 @@ package com.pochka15.funfics.controller;
 
 import com.pochka15.funfics.dto.UserForAdminTableDto;
 import com.pochka15.funfics.dto.form.UserRolesForm;
-import com.pochka15.funfics.service.AdminService;
+import com.pochka15.funfics.service.users.AdminService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

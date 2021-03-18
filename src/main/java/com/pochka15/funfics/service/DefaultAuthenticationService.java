@@ -2,6 +2,7 @@ package com.pochka15.funfics.service;
 
 import com.pochka15.funfics.dto.AuthenticationResult;
 import com.pochka15.funfics.dto.form.LoginForm;
+import com.pochka15.funfics.service.users.DbUserDetailsService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;

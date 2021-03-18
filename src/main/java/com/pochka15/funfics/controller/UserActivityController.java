@@ -4,7 +4,7 @@ import com.pochka15.funfics.dto.AuthenticationResult;
 import com.pochka15.funfics.dto.form.CredentialsForm;
 import com.pochka15.funfics.dto.form.LoginForm;
 import com.pochka15.funfics.service.AuthenticationService;
-import com.pochka15.funfics.service.UserManagementService;
+import com.pochka15.funfics.service.users.UserManagementService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -1,4 +1,4 @@
-package com.pochka15.funfics.service;
+package com.pochka15.funfics.service.funfics;
 
 import com.pochka15.funfics.dto.funfic.FunficDto;
 import com.pochka15.funfics.dto.funfic.FunficWithContentDto;

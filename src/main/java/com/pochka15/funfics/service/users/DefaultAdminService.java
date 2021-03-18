@@ -1,10 +1,11 @@
-package com.pochka15.funfics.service;
+package com.pochka15.funfics.service.users;
 
 import com.pochka15.funfics.converter.users.UserToUserForAdminTableDtoConverter;
 import com.pochka15.funfics.domain.user.Role;
 import com.pochka15.funfics.domain.user.User;
 import com.pochka15.funfics.dto.UserForAdminTableDto;
 import com.pochka15.funfics.repository.jpa.UserRepository;
+import com.pochka15.funfics.service.users.AdminService;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;

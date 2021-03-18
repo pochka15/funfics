@@ -1,8 +1,13 @@
 package com.pochka15.funfics.controller;
 
+import com.pochka15.funfics.domain.funfic.Funfic;
 import com.pochka15.funfics.dto.funfic.FunficDto;
 import com.pochka15.funfics.dto.funfic.FunficWithContentDto;
-import com.pochka15.funfics.service.FunficsService;
+import com.pochka15.funfics.service.funfics.FunficsSearchService;
+import com.pochka15.funfics.service.funfics.FunficsService;
+import org.hibernate.search.engine.search.query.SearchResult;
+import org.hibernate.search.mapper.orm.Search;
+import org.hibernate.search.mapper.orm.session.SearchSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,9 +23,12 @@ import java.util.Optional;
 @RestController
 public class NonAuthorizedUserController {
     private final FunficsService funficsService;
+    private final FunficsSearchService funficsSearchService;
 
-    public NonAuthorizedUserController(FunficsService funficsService) {
+    public NonAuthorizedUserController(FunficsService funficsService,
+                                       FunficsSearchService funficsSearchService) {
         this.funficsService = funficsService;
+        this.funficsSearchService = funficsSearchService;
     }
 
     /**
@@ -39,10 +47,7 @@ public class NonAuthorizedUserController {
     }
 
     @GetMapping("/search")
-    public List<String> search(@RequestParam("name") String name) {
-//        return funficsSearchRepository.findByName(name).stream()
-//                .map(Funfic::getName)
-//                .collect(Collectors.toList());
-        return List.of();
+    public List<FunficDto> search(@RequestParam("query") String query) {
+        return funficsSearchService.searchByName(query);
     }
 }
