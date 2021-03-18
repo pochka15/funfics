@@ -18,4 +18,6 @@ public interface UserManagementService {
      * @return true on success otherwise false
      */
     boolean changeUserPassword(String username, ChangePasswordForm form);
+
+    void refreshLastLoginDate(String username);
 }

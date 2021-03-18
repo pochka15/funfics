@@ -10,14 +10,21 @@ public class UserForAdminTableDto {
     private boolean enabled;
     private String name;
     private Long id;
-    private String registrationDate;
+    private String registrationIsoDateTime;
+    private String lastLoginIsoDateTime;
     private Set<Role> roles;
 
-    public UserForAdminTableDto(String name, Long id, boolean enabled, String registrationDate, Set<Role> roles) {
+    public UserForAdminTableDto(String name,
+                                Long id,
+                                boolean enabled,
+                                String registrationIsoDateTime,
+                                String lastLoginIsoDateTime,
+                                Set<Role> roles) {
         this.name = name;
         this.id = id;
-        this.registrationDate = registrationDate;
+        this.registrationIsoDateTime = registrationIsoDateTime;
         this.enabled = enabled;
+        this.lastLoginIsoDateTime = lastLoginIsoDateTime;
         this.roles = roles;
     }
 }

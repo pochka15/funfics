@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -45,6 +46,12 @@ public class DefaultUserManagementService implements UserManagementService {
                 && updatePassword(foundUser.get(), form.getNewPassword());
     }
 
+    @Override
+    @Transactional
+    public void refreshLastLoginDate(String username) {
+        userRepo.findByName(username).ifPresent(
+                user -> user.getActivity().setLastLoginDate(LocalDateTime.now()));
+    }
 
     private boolean updatePassword(User user, String newPassword) {
         user.setPassword(passwordEncoder.encode(newPassword));

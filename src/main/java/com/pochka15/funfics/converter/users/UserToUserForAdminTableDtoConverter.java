@@ -14,7 +14,8 @@ public class UserToUserForAdminTableDtoConverter implements Converter<User, User
         return new UserForAdminTableDto(source.getName(),
                                         source.getId(),
                                         source.isEnabled(),
-                                        source.getActivity().getRegistrationDate().format(DateTimeFormatter.ISO_DATE),
+                                        source.getActivity().getRegistrationDate().format(DateTimeFormatter.ISO_DATE_TIME),
+                                        source.getActivity().getLastLoginDate().format(DateTimeFormatter.ISO_DATE_TIME),
                                         source.getRoles());
     }
 }
