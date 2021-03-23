@@ -35,7 +35,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity security) throws Exception {
         security.authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/funfics", "/funfic", "/search").permitAll()
+                .antMatchers(HttpMethod.GET, "/funfics", "/funfic", "/search",
+                             "/comments", "/comments-websocket/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/register", "/login").permitAll()
                 .antMatchers("/admin/**").hasAuthority("ADMIN")
                 .anyRequest().authenticated()

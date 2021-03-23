@@ -1,5 +1,6 @@
 package com.pochka15.funfics.domain.user;
 
+import com.pochka15.funfics.domain.funfic.Comment;
 import com.pochka15.funfics.domain.funfic.Funfic;
 import lombok.*;
 
@@ -40,6 +41,10 @@ public class User {
     @OneToMany(mappedBy = "author", orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<Funfic> funfics = List.of();
+
+    @OneToMany(mappedBy = "author", orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<Comment> comments = List.of();
 
     @Override
     public String toString() {

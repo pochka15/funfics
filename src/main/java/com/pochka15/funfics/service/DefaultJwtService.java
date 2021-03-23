@@ -35,17 +35,17 @@ public class DefaultJwtService implements JwtService {
         return claimsResolver.apply(extractAllClaims(token));
     }
 
+    @Override
+    public String generateToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        return createToken(claims, userDetails.getUsername());
+    }
+
     private Claims extractAllClaims(String token)
             throws io.jsonwebtoken.MalformedJwtException,
             io.jsonwebtoken.SignatureException,
             io.jsonwebtoken.ExpiredJwtException {
         return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
-    }
-
-    @Override
-    public String generateToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userDetails.getUsername());
     }
 
     private String createToken(Map<String, Object> claims, String subject) {

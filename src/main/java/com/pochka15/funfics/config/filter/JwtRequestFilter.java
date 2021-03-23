@@ -1,18 +1,14 @@
 package com.pochka15.funfics.config.filter;
 
-import com.pochka15.funfics.service.users.DbUserDetailsService;
-import com.pochka15.funfics.service.DefaultJwtService;
 import com.pochka15.funfics.service.JwtService;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureException;
+import com.pochka15.funfics.service.users.DbUserDetailsService;
+import com.pochka15.funfics.utils.http.HeadersUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -24,15 +20,17 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
+import static com.pochka15.funfics.utils.http.HeadersUtils.extractToken;
+
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
-    private final JwtService defaultJwtService;
+    private final JwtService jwtService;
 
     public JwtRequestFilter(DbUserDetailsService userDetailsService,
-                            DefaultJwtService defaultJwtService) {
+                            JwtService jwtService) {
         this.userDetailsService = userDetailsService;
-        this.defaultJwtService = defaultJwtService;
+        this.jwtService = jwtService;
     }
 
 
@@ -41,20 +39,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
         Optional.ofNullable(request.getHeader(HttpHeaders.AUTHORIZATION))
-                .map(this::extractUsername)
-                .map(this::loadUserDetails)
+                .map(HeadersUtils::extractToken)
+                .map(jwtService::extractUsername)
+                .map(userDetailsService::loadUserByUsername)
                 .ifPresent(userDetails -> SecurityContextHolder.getContext()
                         .setAuthentication(tokenForAuthenticationContext(userDetails, request)));
         chain.doFilter(request, response);
-    }
-
-    private UserDetails loadUserDetails(String username) {
-        try {
-            return userDetailsService.loadUserByUsername(username);
-        } catch (UsernameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     private Authentication tokenForAuthenticationContext(UserDetails userDetails, HttpServletRequest request) {
@@ -63,15 +53,5 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 userDetails.getAuthorities());
         token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         return token;
-    }
-
-    private String extractUsername(String authHeader) {
-        final String bearerPart = "Bearer ";
-        try {
-            return defaultJwtService.extractUsername(authHeader.substring(bearerPart.length()));
-        } catch (MalformedJwtException | SignatureException | ExpiredJwtException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 }

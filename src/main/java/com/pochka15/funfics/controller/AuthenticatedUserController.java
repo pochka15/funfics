@@ -2,19 +2,25 @@ package com.pochka15.funfics.controller;
 
 import com.pochka15.funfics.dto.form.ChangePasswordForm;
 import com.pochka15.funfics.dto.form.DeleteFunficsForm;
+import com.pochka15.funfics.dto.form.SaveCommentForm;
+import com.pochka15.funfics.dto.funfic.CommentDto;
 import com.pochka15.funfics.dto.funfic.FunficDto;
 import com.pochka15.funfics.dto.funfic.SaveFunficForm;
 import com.pochka15.funfics.dto.funfic.UpdateFunficForm;
 import com.pochka15.funfics.exceptions.FunficDoesntExist;
 import com.pochka15.funfics.exceptions.IncorrectAuthor;
+import com.pochka15.funfics.service.funfics.CommentsService;
 import com.pochka15.funfics.service.funfics.FunficsService;
 import com.pochka15.funfics.service.users.UserManagementService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 
@@ -25,11 +31,14 @@ import java.util.List;
 public class AuthenticatedUserController {
     private final FunficsService funficsService;
     private final UserManagementService userManagementService;
+    private final CommentsService commentsService;
 
     public AuthenticatedUserController(FunficsService funficsService,
-                                       UserManagementService userManagementService) {
+                                       UserManagementService userManagementService,
+                                       CommentsService commentsService) {
         this.funficsService = funficsService;
         this.userManagementService = userManagementService;
+        this.commentsService = commentsService;
     }
 
     @PostMapping("/save")
@@ -64,4 +73,12 @@ public class AuthenticatedUserController {
     public List<FunficDto> personalData(Principal principal) {
         return funficsService.fetchFunficsByAuthor(principal.getName());
     }
+
+    @MessageMapping("/save-comment")
+    @SendTo("/sock/comment-listeners")
+    public CommentDto saveComment(@RequestBody @Valid SaveCommentForm comment, Principal principal)
+            throws FunficDoesntExist, IncorrectAuthor {
+        return commentsService.save(comment, principal.getName());
+    }
+
 }

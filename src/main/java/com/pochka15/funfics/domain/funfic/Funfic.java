@@ -3,13 +3,13 @@ package com.pochka15.funfics.domain.funfic;
 
 import com.pochka15.funfics.domain.user.User;
 import lombok.*;
-
-import javax.persistence.*;
-import java.util.Objects;
-import java.util.Set;
-
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+
+import javax.persistence.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 
 @Entity
@@ -18,7 +18,6 @@ import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @Setter
 @Getter
-@ToString
 @Indexed
 public class Funfic {
     @Id
@@ -46,6 +45,10 @@ public class Funfic {
     private String description;
     private float rating;
 
+    @OneToMany(mappedBy = "funfic", orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<Comment> comments = List.of();
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -57,5 +60,17 @@ public class Funfic {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Funfic{" +
+                "id=" + id +
+                ", genre=" + genre +
+                ", tags=" + tags +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", rating=" + rating +
+                '}';
     }
 }
