@@ -12,6 +12,10 @@ public class WebConfig implements WebMvcConfigurer {
     @Value("${front.url}")
     private String frontOrigin;
 
+    public WebConfig() {
+        System.out.println("Configured front origin CORS: " + frontOrigin);
+    }
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
