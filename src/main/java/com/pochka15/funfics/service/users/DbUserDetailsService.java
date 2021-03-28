@@ -26,6 +26,8 @@ public class DbUserDetailsService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        //                TODO(@pochka15): resolve n+1
+        // 2 selects: user and user role
         var found = userRepo.findByName(username);
         if (found.isPresent())
             return userToUserDetailsConverter.convert(found.get());

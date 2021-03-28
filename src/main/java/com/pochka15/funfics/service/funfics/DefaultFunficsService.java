@@ -45,10 +45,18 @@ public class DefaultFunficsService implements FunficsService {
     @Override
     public List<FunficDto> fetchAllFunfics() {
         return funficsRepository.findAll().stream()
+//                TODO(@pochka15): fix the n+1
+                /*
+                select from funfic
+                select from user (because I say funfic.getUser().getName()
+
+                Is it possible to use smth. like findAllWithUsers
+                 */
                 .map(funficToDtoConverter::convert)
                 .collect(Collectors.toList());
     }
 
+    //    TODO(@pochka15): I make select user then insert funfic: do one insert
     @Override
     @Transactional
     public boolean saveFunfic(SaveFunficForm form, String authorName) {
@@ -64,6 +72,7 @@ public class DefaultFunficsService implements FunficsService {
 
     @Override
     public Optional<FunficWithContentDto> fetchFunficById(Long id) {
+//                TODO(@pochka15): resolve n+1
         return funficsRepository.findById(id).map(funficToFunficWithContentConverter::convert);
     }
 
@@ -103,6 +112,7 @@ public class DefaultFunficsService implements FunficsService {
                 .allMatch(funfic -> funfic.getAuthor().getName().equals(author));
     }
 
+    //    TODO(@pochka15): fetch with funfics
     @Override
     public List<FunficDto> fetchFunficsByAuthor(String authorName) {
         final Optional<User> foundUser = userRepository.findByName(authorName);

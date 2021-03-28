@@ -34,6 +34,11 @@ public class DefaultUserManagementService implements UserManagementService {
 
     @Override
     public Optional<UserDto> findByName(String name) {
+//        TODO(@pochka15): Refactor. It fetches the user and activity
+//        set fetch activity as EAGER
+//        OR fetch with joined activity
+//        OR don't fetch activity
+//        + Maybe I need to rename the dto to smth. like fetch with the activity
         return userRepo.findByName(name).map(userToUserDtoConverter::convert);
     }
 
