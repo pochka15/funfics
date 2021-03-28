@@ -40,9 +40,9 @@ public class BaseCommentsService implements CommentsService {
             throws FunficDoesntExist, IncorrectAuthor {
         final Optional<User> foundUser = userRepository.findByName(author);
         if (foundUser.isPresent()) {
-            return commentToDtoConverter.convert(
-                    commentsRepository.save(
-                            buildComment(form, foundUser.get())));
+            Comment builtComment = buildComment(form, foundUser.get());
+            Comment savedComment = commentsRepository.save(builtComment);
+            return commentToDtoConverter.convert(savedComment);
         } else {
             throw new IncorrectAuthor("Comment author: " + author + " is not found");
         }
