@@ -6,15 +6,14 @@ import com.pochka15.funfics.converter.funfic.FunficToFunficWithContentConverter;
 import com.pochka15.funfics.domain.funfic.Funfic;
 import com.pochka15.funfics.domain.funfic.FunficContent;
 import com.pochka15.funfics.domain.user.User;
-import com.pochka15.funfics.dto.UserDto;
 import com.pochka15.funfics.dto.funfic.FunficDto;
-import com.pochka15.funfics.dto.funfic.SaveFunficForm;
 import com.pochka15.funfics.dto.funfic.FunficWithContentDto;
+import com.pochka15.funfics.dto.funfic.SaveFunficForm;
 import com.pochka15.funfics.dto.funfic.UpdateFunficForm;
 import com.pochka15.funfics.exceptions.FunficDoesntExist;
 import com.pochka15.funfics.exceptions.IncorrectAuthor;
 import com.pochka15.funfics.repository.jpa.FunficsRepository;
-import com.pochka15.funfics.service.users.UserManagementService;
+import com.pochka15.funfics.repository.jpa.UserRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -22,41 +21,41 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 public class DefaultFunficsService implements FunficsService {
     private final FunficsRepository funficsRepository;
-    private final UserManagementService userManagementService;
     private final FunficToDtoConverter funficToDtoConverter;
     private final FunficFormToFunficConverter funficFormToFunficConverter;
     private final FunficToFunficWithContentConverter funficToFunficWithContentConverter;
+    private final UserRepository userRepository;
 
     public DefaultFunficsService(FunficsRepository funficsRepository,
-                                 UserManagementService userManagementService,
                                  FunficToDtoConverter funficToDtoConverter,
                                  FunficFormToFunficConverter funficFormToFunficConverter,
-                                 FunficToFunficWithContentConverter funficToFunficWithContentConverter) {
+                                 FunficToFunficWithContentConverter funficToFunficWithContentConverter,
+                                 UserRepository userRepository) {
         this.funficsRepository = funficsRepository;
-        this.userManagementService = userManagementService;
         this.funficToDtoConverter = funficToDtoConverter;
         this.funficFormToFunficConverter = funficFormToFunficConverter;
         this.funficToFunficWithContentConverter = funficToFunficWithContentConverter;
+        this.userRepository = userRepository;
     }
 
     @Override
     public List<FunficDto> fetchAllFunfics() {
-        return StreamSupport.stream(funficsRepository.findAll().spliterator(), false)
+        return funficsRepository.findAll().stream()
                 .map(funficToDtoConverter::convert)
                 .collect(Collectors.toList());
     }
 
     @Override
+    @Transactional
     public boolean saveFunfic(SaveFunficForm form, String authorName) {
-        final Optional<UserDto> found = userManagementService.findByName(authorName);
+        final Optional<User> found = userRepository.findByName(authorName);
         if (found.isPresent()) {
             Funfic funfic = funficFormToFunficConverter.convert(form);
-            funfic.setAuthor(User.builder().id(found.get().getId()).build());
+            funfic.setAuthor(found.get());
             funficsRepository.save(funfic);
             return true;
         }
@@ -100,19 +99,22 @@ public class DefaultFunficsService implements FunficsService {
     }
 
     private boolean checkIfIsAuthorOfGivenFunfics(String author, Collection<Long> ids) {
-        Iterable<Funfic> foundFunfics = funficsRepository.findAllById(ids);
-        return StreamSupport.stream(foundFunfics.spliterator(), true)
+        return funficsRepository.findAllById(ids).stream()
                 .allMatch(funfic -> funfic.getAuthor().getName().equals(author));
     }
 
     @Override
     public List<FunficDto> fetchFunficsByAuthor(String authorName) {
-        final Optional<UserDto> foundUserDto = userManagementService.findByName(authorName);
-        return foundUserDto.map(
-                userDto -> funficsRepository.findByAuthor(User.builder().id(userDto.getId()).build())
-                        .stream()
-                        .map(funficToDtoConverter::convert)
-                        .collect(Collectors.toList()))
+        final Optional<User> foundUser = userRepository.findByName(authorName);
+        return foundUser
+                .map(this::findUserFunfics)
                 .orElseGet(List::of);
+    }
+
+    private List<FunficDto> findUserFunfics(User user) {
+        return funficsRepository.findByAuthor(user)
+                .stream()
+                .map(funficToDtoConverter::convert)
+                .collect(Collectors.toList());
     }
 }
