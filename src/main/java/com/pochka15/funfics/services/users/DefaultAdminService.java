@@ -1,16 +1,18 @@
 package com.pochka15.funfics.services.users;
 
 import com.pochka15.funfics.converters.users.UserToUserForAdminTableDtoConverter;
+import com.pochka15.funfics.dto.UserForAdminTableDto;
 import com.pochka15.funfics.entities.user.Role;
 import com.pochka15.funfics.entities.user.User;
-import com.pochka15.funfics.dto.UserForAdminTableDto;
 import com.pochka15.funfics.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 public class DefaultAdminService implements AdminService {
@@ -25,7 +27,7 @@ public class DefaultAdminService implements AdminService {
 
     @Override
     public List<UserForAdminTableDto> allUsers() {
-        return StreamSupport.stream(userRepository.findAll().spliterator(), false)
+        return userRepository.findAll().stream()
                 .map(userToUserForAdminTableDtoConverter::convert)
                 .collect(Collectors.toList());
     }
