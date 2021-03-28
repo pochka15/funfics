@@ -1,0 +1,120 @@
+package com.pochka15.funfics.services.funfics;
+
+import com.pochka15.funfics.converters.funfics.FunficFormToFunficConverter;
+import com.pochka15.funfics.converters.funfics.FunficToDtoConverter;
+import com.pochka15.funfics.converters.funfics.FunficToFunficWithContentConverter;
+import com.pochka15.funfics.entities.funfic.Funfic;
+import com.pochka15.funfics.entities.funfic.FunficContent;
+import com.pochka15.funfics.entities.user.User;
+import com.pochka15.funfics.dto.funfic.FunficDto;
+import com.pochka15.funfics.dto.funfic.FunficWithContentDto;
+import com.pochka15.funfics.dto.funfic.SaveFunficForm;
+import com.pochka15.funfics.dto.funfic.UpdateFunficForm;
+import com.pochka15.funfics.exceptions.FunficDoesntExist;
+import com.pochka15.funfics.exceptions.IncorrectAuthor;
+import com.pochka15.funfics.repositories.FunficsRepository;
+import com.pochka15.funfics.repositories.UserRepository;
+import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+public class DefaultFunficsService implements FunficsService {
+    private final FunficsRepository funficsRepository;
+    private final FunficToDtoConverter funficToDtoConverter;
+    private final FunficFormToFunficConverter funficFormToFunficConverter;
+    private final FunficToFunficWithContentConverter funficToFunficWithContentConverter;
+    private final UserRepository userRepository;
+
+    public DefaultFunficsService(FunficsRepository funficsRepository,
+                                 FunficToDtoConverter funficToDtoConverter,
+                                 FunficFormToFunficConverter funficFormToFunficConverter,
+                                 FunficToFunficWithContentConverter funficToFunficWithContentConverter,
+                                 UserRepository userRepository) {
+        this.funficsRepository = funficsRepository;
+        this.funficToDtoConverter = funficToDtoConverter;
+        this.funficFormToFunficConverter = funficFormToFunficConverter;
+        this.funficToFunficWithContentConverter = funficToFunficWithContentConverter;
+        this.userRepository = userRepository;
+    }
+
+    @Override
+    public List<FunficDto> fetchAllFunfics() {
+        return funficsRepository.findAll().stream()
+                .map(funficToDtoConverter::convert)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public boolean saveFunfic(SaveFunficForm form, String authorName) {
+        final Optional<User> found = userRepository.findByName(authorName);
+        if (found.isPresent()) {
+            Funfic funfic = funficFormToFunficConverter.convert(form);
+            funfic.setAuthor(found.get());
+            funficsRepository.save(funfic);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Optional<FunficWithContentDto> fetchFunficById(Long id) {
+        return funficsRepository.findById(id).map(funficToFunficWithContentConverter::convert);
+    }
+
+    @Override
+    public boolean deleteFunfics(String authorName, Collection<Long> funficIds) {
+        if (checkIfIsAuthorOfGivenFunfics(authorName, funficIds)) {
+            funficsRepository.deleteAll(
+                    funficIds.stream()
+                            .map(id -> Funfic.builder().id(id).build())
+                            .collect(Collectors.toList()));
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    @Transactional
+    public void updateFunfic(UpdateFunficForm form, String username) throws FunficDoesntExist, IncorrectAuthor {
+        final Optional<Funfic> foundFunfic = funficsRepository.findById(form.getId());
+        if (foundFunfic.isPresent()) {
+            boolean sameAuthors = foundFunfic.get().getAuthor().getName().equals(username);
+            if (sameAuthors) updateFunfic(foundFunfic.get(), form);
+            else throw new IncorrectAuthor();
+        } else throw new FunficDoesntExist();
+    }
+
+    private void updateFunfic(Funfic funfic, UpdateFunficForm form) {
+        funfic.setFunficContent(new FunficContent(form.getContent()));
+        funfic.setDescription(form.getDescription());
+        funfic.setGenre(form.getGenre());
+        funfic.setName(form.getName());
+        funfic.setTags(form.getTags());
+    }
+
+    private boolean checkIfIsAuthorOfGivenFunfics(String author, Collection<Long> ids) {
+        return funficsRepository.findAllById(ids).stream()
+                .allMatch(funfic -> funfic.getAuthor().getName().equals(author));
+    }
+
+    @Override
+    public List<FunficDto> fetchFunficsByAuthor(String authorName) {
+        final Optional<User> foundUser = userRepository.findByName(authorName);
+        return foundUser
+                .map(this::findUserFunfics)
+                .orElseGet(List::of);
+    }
+
+    private List<FunficDto> findUserFunfics(User user) {
+        return funficsRepository.findByAuthor(user)
+                .stream()
+                .map(funficToDtoConverter::convert)
+                .collect(Collectors.toList());
+    }
+}

@@ -1,6 +1,6 @@
 package com.pochka15.funfics.dto;
 
-import com.pochka15.funfics.domain.user.Role;
+import com.pochka15.funfics.entities.user.Role;
 import lombok.Data;
 
 import java.util.Set;

@@ -1,6 +1,6 @@
 package com.pochka15.funfics.dto;
 
-import com.pochka15.funfics.domain.user.UserActivity;
+import com.pochka15.funfics.entities.user.UserActivity;
 import lombok.Data;
 
 @Data
