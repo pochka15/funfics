@@ -43,11 +43,14 @@ public class Funfic {
     private String name;
 
     private String description;
-    private float rating;
 
     @OneToMany(mappedBy = "funfic", orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<Comment> comments = List.of();
+
+    @OneToMany(mappedBy = "funfic", orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<FunficRating> ratings = List.of();
 
     @Override
     public boolean equals(Object o) {
@@ -69,8 +72,7 @@ public class Funfic {
                 ", genre=" + genre +
                 ", tags=" + tags +
                 ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", rating=" + rating +
+                ", description='" + description +
                 '}';
     }
 }

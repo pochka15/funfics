@@ -1,5 +1,6 @@
 package com.pochka15.funfics.services.funfics;
 
+import com.pochka15.funfics.dto.form.RateFunficForm;
 import com.pochka15.funfics.dto.funfic.FunficDto;
 import com.pochka15.funfics.dto.funfic.FunficWithContentDto;
 import com.pochka15.funfics.dto.funfic.SaveFunficForm;
@@ -19,7 +20,7 @@ public interface FunficsService {
      */
     boolean saveFunfic(SaveFunficForm form, String authorName);
 
-    Optional<FunficWithContentDto> fetchFunficById(Long id);
+    Optional<FunficWithContentDto> fetchFunficById(long id);
 
     List<FunficDto> fetchFunficsByAuthor(String authorName);
 
@@ -28,5 +29,13 @@ public interface FunficsService {
      */
     boolean deleteFunfics(String authorName, Collection<Long> funficIds);
 
-    void updateFunfic(UpdateFunficForm form, String username) throws FunficDoesntExist, IncorrectAuthor;
+    /**
+     * Update the funfic data (e.x. content, description...) from the form
+     *
+     * @param form   - contains new funfic data
+     * @param author - the username
+     * @throws FunficDoesntExist - when the funfic is not found in the database
+     * @throws IncorrectAuthor   - when the given author is not the same as the author of the funfic
+     */
+    void updateFunfic(UpdateFunficForm form, String author) throws FunficDoesntExist, IncorrectAuthor;
 }

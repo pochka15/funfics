@@ -11,12 +11,13 @@ public class FunficToFunficWithContentConverter implements Converter<Funfic, Fun
     public FunficWithContentDto convert(Funfic source) {
         return FunficWithContentDto.builder()
                 .name(source.getName())
-                .rating(source.getRating())
                 .description(source.getDescription())
                 .tags(source.getTags())
                 .id(source.getId())
                 .content(source.getFunficContent().getData())
                 .genre(source.getGenre())
+//                TODO(@pochka15): edit
+                .rating(0)
                 .author(source.getAuthor().getName())
                 .build();
     }

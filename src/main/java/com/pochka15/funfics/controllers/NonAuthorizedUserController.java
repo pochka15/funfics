@@ -4,6 +4,7 @@ import com.pochka15.funfics.dto.funfic.CommentDto;
 import com.pochka15.funfics.dto.funfic.FunficDto;
 import com.pochka15.funfics.dto.funfic.FunficWithContentDto;
 import com.pochka15.funfics.services.funfics.CommentsService;
+import com.pochka15.funfics.services.funfics.FunficRatingService;
 import com.pochka15.funfics.services.funfics.FunficsSearchService;
 import com.pochka15.funfics.services.funfics.FunficsService;
 import org.springframework.http.HttpStatus;
@@ -23,13 +24,15 @@ public class NonAuthorizedUserController {
     private final FunficsService funficsService;
     private final FunficsSearchService funficsSearchService;
     private final CommentsService commentsService;
+    private final FunficRatingService funficRatingService;
 
     public NonAuthorizedUserController(FunficsService funficsService,
                                        FunficsSearchService funficsSearchService,
-                                       CommentsService commentsService) {
+                                       CommentsService commentsService, FunficRatingService funficRatingService) {
         this.funficsService = funficsService;
         this.funficsSearchService = funficsSearchService;
         this.commentsService = commentsService;
+        this.funficRatingService = funficRatingService;
     }
 
     /**
@@ -57,4 +60,9 @@ public class NonAuthorizedUserController {
         return commentsService.funficComments(id);
     }
 
+    //    TODO(@pochka15): test
+    @GetMapping("/funfic-rating")
+    public float funficRating(@RequestParam Long id) {
+        return funficRatingService.averageRating(id);
+    }
 }

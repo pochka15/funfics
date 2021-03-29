@@ -11,11 +11,12 @@ public class FunficToDtoConverter implements Converter<Funfic, FunficDto> {
     public FunficDto convert(Funfic source) {
         return FunficDto.builder()
                 .name(source.getName())
-                .rating(source.getRating())
                 .description(source.getDescription())
                 .tags(source.getTags())
                 .id(source.getId())
                 .genre(source.getGenre())
+//                TODO(@pochka15): edit
+                .rating(0)
                 .author(source.getAuthor().getName())
                 .build();
     }

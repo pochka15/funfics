@@ -2,6 +2,7 @@ package com.pochka15.funfics.controllers;
 
 import com.pochka15.funfics.dto.form.ChangePasswordForm;
 import com.pochka15.funfics.dto.form.DeleteFunficsForm;
+import com.pochka15.funfics.dto.form.RateFunficForm;
 import com.pochka15.funfics.dto.form.SaveCommentForm;
 import com.pochka15.funfics.dto.funfic.CommentDto;
 import com.pochka15.funfics.dto.funfic.FunficDto;
@@ -10,15 +11,13 @@ import com.pochka15.funfics.dto.funfic.UpdateFunficForm;
 import com.pochka15.funfics.exceptions.FunficDoesntExist;
 import com.pochka15.funfics.exceptions.IncorrectAuthor;
 import com.pochka15.funfics.services.funfics.CommentsService;
+import com.pochka15.funfics.services.funfics.FunficRatingService;
 import com.pochka15.funfics.services.funfics.FunficsService;
 import com.pochka15.funfics.services.users.UserManagementService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -32,13 +31,16 @@ public class AuthenticatedUserController {
     private final FunficsService funficsService;
     private final UserManagementService userManagementService;
     private final CommentsService commentsService;
+    private final FunficRatingService funficRatingService;
 
     public AuthenticatedUserController(FunficsService funficsService,
                                        UserManagementService userManagementService,
-                                       CommentsService commentsService) {
+                                       CommentsService commentsService,
+                                       FunficRatingService funficRatingService) {
         this.funficsService = funficsService;
         this.userManagementService = userManagementService;
         this.commentsService = commentsService;
+        this.funficRatingService = funficRatingService;
     }
 
     @PostMapping("/save")
@@ -81,4 +83,17 @@ public class AuthenticatedUserController {
         return commentsService.save(comment, principal.getName());
     }
 
+    //    TODO(@pochka15): test
+    @GetMapping("/can-rate")
+    public boolean checkUserCanRateFunfic(@RequestParam long funficId, Principal principal) {
+        return funficRatingService.checkIfUserCanRateFunfic(funficId, principal.getName());
+    }
+
+    //    TODO(@pochka15): test
+    @PostMapping("/rate")
+    public ResponseEntity<?> rateFunfic(@RequestBody RateFunficForm form, Principal principal) {
+        return funficRatingService.rateFunfic(form, principal.getName())
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.badRequest().build();
+    }
 }
