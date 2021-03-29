@@ -40,6 +40,11 @@ public class AdminController {
         return okOrBadResponse(() -> adminService.blockUserById(id));
     }
 
+    @GetMapping("/admin/unblock-user")
+    public ResponseEntity<?> unblockUser(@RequestParam Long id) {
+        return okOrBadResponse(() -> adminService.unblockUserById(id));
+    }
+
     @GetMapping("/admin/make-admin")
     public ResponseEntity<?> makeAdmin(@RequestParam Long id) {
         return okOrBadResponse(() -> adminService.makeAdminById(id));

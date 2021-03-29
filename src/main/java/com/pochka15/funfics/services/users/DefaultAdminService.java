@@ -40,8 +40,18 @@ public class DefaultAdminService implements AdminService {
     @Override
     @Transactional
     public boolean blockUserById(Long id) {
-        Optional<User> found = userRepository.findById(id);
-        found.ifPresent(user -> user.setEnabled(false));
+        return setUserEnabled(false, id);
+    }
+
+    @Override
+    @Transactional
+    public boolean unblockUserById(Long id) {
+        return setUserEnabled(true, id);
+    }
+
+    private boolean setUserEnabled(boolean isEnabled, Long userId) {
+        Optional<User> found = userRepository.findById(userId);
+        found.ifPresent(user -> user.setEnabled(isEnabled));
         return found.isPresent();
     }
 
