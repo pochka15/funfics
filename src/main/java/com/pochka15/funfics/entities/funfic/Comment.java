@@ -4,7 +4,6 @@ import com.pochka15.funfics.entities.user.User;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 @Builder
@@ -12,6 +11,8 @@ import java.util.Objects;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @Setter
 @Getter
+@EqualsAndHashCode(of = {"id", "content"})
+@ToString(of = {"id", "content"})
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,25 +27,4 @@ public class Comment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "funfic_id")
     private Funfic funfic;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Comment comment = (Comment) o;
-        return Objects.equals(id, comment.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return 42;
-    }
-
-    @Override
-    public String toString() {
-        return "Comment{" +
-                "id=" + id +
-                ", content='" + content + '\'' +
-                '}';
-    }
 }

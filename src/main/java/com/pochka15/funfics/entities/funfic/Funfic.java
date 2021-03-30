@@ -19,6 +19,8 @@ import java.util.Set;
 @Setter
 @Getter
 @Indexed
+@EqualsAndHashCode(of = {"id", "genre", "tags", "name", "description"})
+@ToString(of = {"id", "genre", "tags", "name", "description"})
 public class Funfic {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -51,28 +53,4 @@ public class Funfic {
     @OneToMany(mappedBy = "funfic", orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<FunficRating> ratings = List.of();
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Funfic funfic = (Funfic) o;
-        return Objects.equals(id, funfic.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "Funfic{" +
-                "id=" + id +
-                ", genre=" + genre +
-                ", tags=" + tags +
-                ", name='" + name + '\'' +
-                ", description='" + description +
-                '}';
-    }
 }

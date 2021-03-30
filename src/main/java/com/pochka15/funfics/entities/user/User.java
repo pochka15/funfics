@@ -6,7 +6,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -15,6 +14,9 @@ import java.util.Set;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @Setter
 @Getter
+@EqualsAndHashCode(of = {"id", "name", "isEnabled", "email"})
+@ToString(of = {"id", "name", "isEnabled", "email"})
+@Table(name = "user")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -34,7 +36,7 @@ public class User {
     private Set<Role> roles = Set.of();
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "actiity_id")
+    @JoinColumn(name = "activity_id")
     @Builder.Default
     private UserActivity activity = new UserActivity();
 
@@ -45,27 +47,4 @@ public class User {
     @OneToMany(mappedBy = "author", orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<Comment> comments = List.of();
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", isEnabled=" + isEnabled +
-                ", email='" + email +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return 42;
-    }
 }

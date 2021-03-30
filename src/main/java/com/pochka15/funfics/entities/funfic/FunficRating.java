@@ -12,6 +12,9 @@ import java.util.Objects;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @Setter
 @Getter
+@EqualsAndHashCode(of = {"id", "value"})
+@ToString(of = {"id", "value"})
+@Table(name = "funfic_rating")
 public class FunficRating {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,25 +29,4 @@ public class FunficRating {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "funfic_id")
     private Funfic funfic;
-
-    @Override
-    public String toString() {
-        return "FunficRating{" +
-                "id=" + id +
-                ", value=" + value +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        FunficRating that = (FunficRating) o;
-        return Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return 42;
-    }
 }

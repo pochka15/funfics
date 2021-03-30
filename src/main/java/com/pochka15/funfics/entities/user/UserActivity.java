@@ -12,12 +12,8 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Builder
+@Data
 @NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PACKAGE)
-@Setter
-@Getter
-@ToString
 public class UserActivity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,17 +24,4 @@ public class UserActivity {
 
     @UpdateTimestamp
     private LocalDateTime lastLoginDate;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserActivity that = (UserActivity) o;
-        return Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return 42;
-    }
 }
