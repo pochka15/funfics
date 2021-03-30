@@ -41,8 +41,6 @@ public class BaseFunficRatingService implements FunficRatingService {
                 .isPresent();
     }
 
-    //    TODO(@pochka15): test it, there will be a lot of selects/inserts
-//    refactor this
     @Override
     @Transactional
     public boolean rateFunfic(RateFunficForm rateFunficForm, String username) {
@@ -50,24 +48,32 @@ public class BaseFunficRatingService implements FunficRatingService {
         if (checkIfUserCanRateFunfic(funficId, username)) {
             final Optional<User> foundUser = userRepository.findByName(username);
             if (foundUser.isPresent()) {
-                final Funfic funfic = funficsRepository.getOne(funficId);
-                final FunficRating builtRating = FunficRating
-                        .builder()
-                        .funfic(funfic)
-                        .value(rateFunficForm.getRating())
-                        .user(foundUser.get())
-                        .build();
-
-                funficRatingRepository.save(builtRating);
-
+                saveRating(funficId, rateFunficForm.getRating(), foundUser.get());
                 return true;
             }
         }
         return false;
     }
 
+    private void saveRating(Long funficId, float ratingValue, User userThatGaveRating) {
+        final Funfic funfic = funficsRepository.getOne(funficId);
+        funficRatingRepository.save(
+                builtRating(funfic, ratingValue, userThatGaveRating));
+    }
+
+    private FunficRating builtRating(Funfic funfic, float ratingValue, User user) {
+        return FunficRating
+                .builder()
+                .funfic(funfic)
+                .value(ratingValue)
+                .user(user)
+                .build();
+    }
+
     @Override
     public float averageRating(long funficId) {
-        return funficRatingRepository.averageFunficRating(funficsRepository.getOne(funficId));
+        return funficRatingRepository
+                .averageFunficRating(funficsRepository.getOne(funficId))
+                .orElseGet(() -> (float) 0);
     }
 }

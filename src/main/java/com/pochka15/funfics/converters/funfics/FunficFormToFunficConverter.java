@@ -1,8 +1,8 @@
 package com.pochka15.funfics.converters.funfics;
 
+import com.pochka15.funfics.dto.funfic.SaveFunficForm;
 import com.pochka15.funfics.entities.funfic.Funfic;
 import com.pochka15.funfics.entities.funfic.FunficContent;
-import com.pochka15.funfics.dto.funfic.SaveFunficForm;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;

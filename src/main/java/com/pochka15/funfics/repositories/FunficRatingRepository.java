@@ -12,5 +12,5 @@ public interface FunficRatingRepository extends JpaRepository<FunficRating, Long
     Optional<FunficRating> findByUserAndFunfic(User user, Funfic funfic);
 
     @Query("SELECT AVG(r.value) FROM FunficRating r WHERE r.funfic = ?1")
-    float averageFunficRating(Funfic funfic);
+    Optional<Float> averageFunficRating(Funfic funfic);
 }

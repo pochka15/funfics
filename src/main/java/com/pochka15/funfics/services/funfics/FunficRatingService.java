@@ -11,6 +11,8 @@ public interface FunficRatingService {
     boolean checkIfUserCanRateFunfic(long funficId, String username);
 
     /**
+     * @param rateFunficForm just input data
+     * @param username       name of the user who rated the funfic
      * @return <b>true</b> on success otherwise false
      */
     boolean rateFunfic(RateFunficForm rateFunficForm, String username);

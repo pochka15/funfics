@@ -83,13 +83,11 @@ public class AuthenticatedUserController {
         return commentsService.save(comment, principal.getName());
     }
 
-    //    TODO(@pochka15): test
     @GetMapping("/can-rate")
     public boolean checkUserCanRateFunfic(@RequestParam long funficId, Principal principal) {
         return funficRatingService.checkIfUserCanRateFunfic(funficId, principal.getName());
     }
 
-    //    TODO(@pochka15): test
     @PostMapping("/rate")
     public ResponseEntity<?> rateFunfic(@RequestBody RateFunficForm form, Principal principal) {
         return funficRatingService.rateFunfic(form, principal.getName())

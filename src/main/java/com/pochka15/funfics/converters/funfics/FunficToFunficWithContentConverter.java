@@ -16,8 +16,6 @@ public class FunficToFunficWithContentConverter implements Converter<Funfic, Fun
                 .id(source.getId())
                 .content(source.getFunficContent().getData())
                 .genre(source.getGenre())
-//                TODO(@pochka15): edit
-                .rating(0)
                 .author(source.getAuthor().getName())
                 .build();
     }

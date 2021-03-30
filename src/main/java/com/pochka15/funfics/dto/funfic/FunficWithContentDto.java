@@ -21,7 +21,6 @@ public class FunficWithContentDto {
 
     private String name;
     private String description;
-    private float rating;
     private String content;
     private String author;
 }

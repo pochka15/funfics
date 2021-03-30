@@ -60,7 +60,6 @@ public class NonAuthorizedUserController {
         return commentsService.funficComments(id);
     }
 
-    //    TODO(@pochka15): test
     @GetMapping("/funfic-rating")
     public float funficRating(@RequestParam Long id) {
         return funficRatingService.averageRating(id);
