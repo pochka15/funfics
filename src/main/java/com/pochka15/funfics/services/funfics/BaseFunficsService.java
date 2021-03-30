@@ -24,18 +24,18 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class DefaultFunficsService implements FunficsService {
+public class BaseFunficsService implements FunficsService {
     private final FunficsRepository funficsRepository;
     private final FunficToDtoConverter funficToDtoConverter;
     private final FunficFormToFunficConverter funficFormToFunficConverter;
     private final FunficToFunficWithContentConverter funficToFunficWithContentConverter;
     private final UserRepository userRepository;
 
-    public DefaultFunficsService(FunficsRepository funficsRepository,
-                                 FunficToDtoConverter funficToDtoConverter,
-                                 FunficFormToFunficConverter funficFormToFunficConverter,
-                                 FunficToFunficWithContentConverter funficToFunficWithContentConverter,
-                                 UserRepository userRepository) {
+    public BaseFunficsService(FunficsRepository funficsRepository,
+                              FunficToDtoConverter funficToDtoConverter,
+                              FunficFormToFunficConverter funficFormToFunficConverter,
+                              FunficToFunficWithContentConverter funficToFunficWithContentConverter,
+                              UserRepository userRepository) {
         this.funficsRepository = funficsRepository;
         this.funficToDtoConverter = funficToDtoConverter;
         this.funficFormToFunficConverter = funficFormToFunficConverter;

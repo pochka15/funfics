@@ -15,7 +15,7 @@ import java.util.function.Function;
 import static org.apache.commons.lang3.time.DateUtils.addHours;
 
 @Component
-public class DefaultJwtService implements JwtService {
+public class BaseJwtService implements JwtService {
     @Value("${jwt.secret}")
     private String SECRET_KEY;
 

@@ -11,20 +11,20 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class DefaultAuthenticationService implements AuthenticationService {
+public class BaseAuthenticationService implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
     private final UserManagementService userManagementService;
     private final JwtService defaultJwtService;
 
-    public DefaultAuthenticationService(
+    public BaseAuthenticationService(
             AuthenticationManager authenticationManager,
             DbUserDetailsService userDetailsService,
-            UserManagementService userManagementService, DefaultJwtService defaultJwtService) {
+            UserManagementService userManagementService, BaseJwtService jwtService) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.userManagementService = userManagementService;
-        this.defaultJwtService = defaultJwtService;
+        this.defaultJwtService = jwtService;
     }
 
     @Override

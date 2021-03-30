@@ -15,12 +15,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class DefaultAdminService implements AdminService {
+public class BaseAdminService implements AdminService {
     private final UserRepository userRepository;
     private final UserToUserForAdminTableDtoConverter userToUserForAdminTableDtoConverter;
 
-    public DefaultAdminService(UserRepository userRepository,
-                               UserToUserForAdminTableDtoConverter userToUserForAdminTableDtoConverter) {
+    public BaseAdminService(UserRepository userRepository,
+                            UserToUserForAdminTableDtoConverter userToUserForAdminTableDtoConverter) {
         this.userRepository = userRepository;
         this.userToUserForAdminTableDtoConverter = userToUserForAdminTableDtoConverter;
     }

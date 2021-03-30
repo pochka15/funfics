@@ -15,16 +15,16 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
-public class DefaultUserManagementService implements UserManagementService {
+public class BaseUserManagementService implements UserManagementService {
     private final UserRepository userRepo;
     private final PasswordEncoder passwordEncoder;
     private final CredentialsToUserConverter credentialsToUserConverter;
     private final UserToUserDtoConverter userToUserDtoConverter;
 
-    public DefaultUserManagementService(UserRepository userRepo,
-                                        PasswordEncoder passwordEncoder,
-                                        CredentialsToUserConverter credentialsToUserConverter,
-                                        UserToUserDtoConverter userToUserDtoConverter) {
+    public BaseUserManagementService(UserRepository userRepo,
+                                     PasswordEncoder passwordEncoder,
+                                     CredentialsToUserConverter credentialsToUserConverter,
+                                     UserToUserDtoConverter userToUserDtoConverter) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
         this.credentialsToUserConverter = credentialsToUserConverter;
