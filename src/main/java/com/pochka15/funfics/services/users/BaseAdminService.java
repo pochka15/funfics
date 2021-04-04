@@ -29,6 +29,7 @@ public class BaseAdminService implements AdminService {
     }
 
     @Override
+    @Transactional
     public List<UserForAdmin> allUsers() {
         return userRepository.findAll().stream()
                 .map(userToUserForAdminTableDtoConverter::convert)
@@ -36,6 +37,7 @@ public class BaseAdminService implements AdminService {
     }
 
     @Override
+    @Transactional
     public UserForAdmin fetchUserById(Long id) throws UserNotFound {
         return userToUserForAdminTableDtoConverter.convert(
                 utilityUserService.getUserOrThrow(
