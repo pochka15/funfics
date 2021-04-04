@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -65,16 +64,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().csrf().disable();
         security.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.jdbcAuthentication()
-                .dataSource(datasource)
-                .passwordEncoder(passwordEncoder)
-                .usersByUsernameQuery("select name, password, is_enabled from user where name=?")
-                .authoritiesByUsernameQuery("select u.name, ur.roles from user u inner join user_role ur on u.id = ur.user_id where u.name=?");
-    }
-
 
     @Override
     @Bean
