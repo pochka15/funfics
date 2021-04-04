@@ -35,8 +35,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity security) throws Exception {
         security.authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/funfics", "/funfic", "/search",
-                             "/comments", "/comments-websocket/**", "/funfic-rating").permitAll()
+                .antMatchers(HttpMethod.GET,
+                             "/search/funfics",
+                             "/funfics/comments/*",
+                             "/funfics/*",
+                             "/funfics/*/rating",
+                             "/funfics/all-without-content",
+                             "/funfics/*",
+                             "/comments-websocket/**",
+//                             Swagger
+                             "/configuration/ui",
+                             "/configuration/security",
+                             "/swagger-ui.html",
+                             "/swagger-ui/**",
+                             "/swagger-resources/**",
+                             "/swagger-ui.html",
+                             "/webjars/**",
+                             "/v2/api-docs",
+                             // -- Swagger UI v3 (OpenAPI)
+                             "/v3/api-docs/**",
+                             "/swagger-ui/**")
+                .permitAll()
                 .antMatchers(HttpMethod.POST, "/register", "/login").permitAll()
                 .antMatchers("/admin/**").hasAuthority("ADMIN")
                 .anyRequest().authenticated()

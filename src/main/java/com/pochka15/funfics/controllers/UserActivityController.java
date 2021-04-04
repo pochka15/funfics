@@ -1,10 +1,12 @@
 package com.pochka15.funfics.controllers;
 
 import com.pochka15.funfics.dto.AuthenticationResult;
+import com.pochka15.funfics.dto.form.ChangePasswordForm;
 import com.pochka15.funfics.dto.form.CredentialsForm;
 import com.pochka15.funfics.dto.form.LoginForm;
 import com.pochka15.funfics.services.AuthenticationService;
 import com.pochka15.funfics.services.users.UserManagementService;
+import io.swagger.annotations.Authorization;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.security.Principal;
+
+import static com.pochka15.funfics.configs.SpringFoxConfig.API_KEY_NAME;
 
 /**
  * Controller that is primarily made to map register and login requests
@@ -40,5 +45,13 @@ public class UserActivityController {
             throw new Exception("Invalid credentials");
         }
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/change-password")
+    @Authorization(API_KEY_NAME)
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordForm form, Principal principal) {
+        return userManagementService.changeUserPassword(principal.getName(), form)
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.badRequest().build();
     }
 }
