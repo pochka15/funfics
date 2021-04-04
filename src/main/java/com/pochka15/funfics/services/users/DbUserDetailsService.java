@@ -1,6 +1,7 @@
 package com.pochka15.funfics.services.users;
 
 import com.pochka15.funfics.converters.users.UserToUserDetailsConverter;
+import com.pochka15.funfics.entities.user.User;
 import com.pochka15.funfics.repositories.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,9 +27,9 @@ public class DbUserDetailsService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        var found = userRepo.findByName(username);
-        if (found.isPresent())
-            return userToUserDetailsConverter.convert(found.get());
-        else throw new UsernameNotFoundException("Couldn't find the user: " + username);
+        User user = userRepo
+                .findByName(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Couldn't find the user " + username));
+        return userToUserDetailsConverter.convert(user);
     }
 }

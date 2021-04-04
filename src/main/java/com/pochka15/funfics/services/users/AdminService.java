@@ -1,25 +1,24 @@
 package com.pochka15.funfics.services.users;
 
+import com.pochka15.funfics.dto.UserForAdmin;
 import com.pochka15.funfics.entities.user.Role;
-import com.pochka15.funfics.dto.UserForAdminTableDto;
+import com.pochka15.funfics.exceptions.UserNotFound;
 
-import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 public interface AdminService {
-    List<UserForAdminTableDto> allUsers();
+    List<UserForAdmin> allUsers();
 
-    boolean deleteUserById(Long id);
+    void deleteUserById(Long id);
 
-    Optional<UserForAdminTableDto> fetchUserById(Long id);
+    UserForAdmin fetchUserById(Long id) throws UserNotFound;
 
-    boolean blockUserById(Long id);
+    UserForAdmin blockUserById(Long id) throws UserNotFound;
 
-    boolean unblockUserById(Long id);
+    UserForAdmin unblockUserById(Long id) throws UserNotFound;
 
-    boolean makeAdminById(Long id);
+    UserForAdmin makeAdminById(Long id) throws UserNotFound;
 
-    boolean setUserRoles(Long id, Set<Role> roles);
+    UserForAdmin setUserRoles(Long id, Set<Role> roles) throws UserNotFound;
 }

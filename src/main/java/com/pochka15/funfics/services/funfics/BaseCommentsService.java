@@ -1,12 +1,12 @@
 package com.pochka15.funfics.services.funfics;
 
 import com.pochka15.funfics.converters.funfics.CommentToDtoConverter;
-import com.pochka15.funfics.entities.funfic.Comment;
-import com.pochka15.funfics.entities.user.User;
 import com.pochka15.funfics.dto.form.SaveCommentForm;
 import com.pochka15.funfics.dto.funfic.CommentDto;
+import com.pochka15.funfics.entities.funfic.Comment;
+import com.pochka15.funfics.entities.user.User;
 import com.pochka15.funfics.exceptions.FunficDoesntExist;
-import com.pochka15.funfics.exceptions.IncorrectAuthor;
+import com.pochka15.funfics.exceptions.IncorrectFunficAuthor;
 import com.pochka15.funfics.repositories.CommentsRepository;
 import com.pochka15.funfics.repositories.FunficsRepository;
 import com.pochka15.funfics.repositories.UserRepository;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,15 +36,13 @@ public class BaseCommentsService implements CommentsService {
     @Override
     @Transactional
     public CommentDto save(SaveCommentForm form, String author)
-            throws FunficDoesntExist, IncorrectAuthor {
-        final Optional<User> foundUser = userRepository.findByName(author);
-        if (foundUser.isPresent()) {
-            Comment builtComment = buildComment(form, foundUser.get());
-            Comment savedComment = commentsRepository.save(builtComment);
-            return commentToDtoConverter.convert(savedComment);
-        } else {
-            throw new IncorrectAuthor("Comment author: " + author + " is not found");
-        }
+            throws FunficDoesntExist, IncorrectFunficAuthor {
+        final User user = userRepository
+                .findByName(author)
+                .orElseThrow(() -> new IncorrectFunficAuthor("Comment author: " + author + " is not found"));
+        final Comment builtComment = buildComment(form, user);
+        final Comment savedComment = commentsRepository.save(builtComment);
+        return commentToDtoConverter.convert(savedComment);
     }
 
     private Comment buildComment(SaveCommentForm form, User author) throws FunficDoesntExist {

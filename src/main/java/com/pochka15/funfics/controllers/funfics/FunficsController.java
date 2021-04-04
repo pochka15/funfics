@@ -7,7 +7,9 @@ import com.pochka15.funfics.dto.funfic.FunficWithContentDto;
 import com.pochka15.funfics.dto.funfic.SaveFunficForm;
 import com.pochka15.funfics.dto.funfic.UpdateFunficForm;
 import com.pochka15.funfics.exceptions.FunficDoesntExist;
-import com.pochka15.funfics.exceptions.IncorrectAuthor;
+import com.pochka15.funfics.exceptions.IncorrectFunficAuthor;
+import com.pochka15.funfics.exceptions.UserCannotRateFunfic;
+import com.pochka15.funfics.exceptions.UserNotFound;
 import com.pochka15.funfics.services.funfics.FunficRatingService;
 import com.pochka15.funfics.services.funfics.FunficsService;
 import io.swagger.annotations.Authorization;
@@ -39,26 +41,22 @@ public class FunficsController {
 
     @PostMapping
     @Authorization(API_KEY_NAME)
-    public ResponseEntity<?> save(@RequestBody SaveFunficForm form, Principal principal) {
-        return funficsService.saveFunfic(form, principal.getName())
-                ? ResponseEntity.ok().build()
-                : ResponseEntity.badRequest().build();
+    public FunficDto save(@RequestBody SaveFunficForm form, Principal principal) throws UserNotFound {
+        return funficsService.saveFunfic(form, principal.getName());
     }
 
     @PostMapping("/update")
     @Authorization(API_KEY_NAME)
-    public ResponseEntity<?> update(@RequestBody UpdateFunficForm form, Principal principal)
-            throws IncorrectAuthor, FunficDoesntExist {
-        funficsService.updateFunfic(form, principal.getName());
-        return ResponseEntity.ok().build();
+    public FunficDto update(@RequestBody UpdateFunficForm form, Principal principal)
+            throws IncorrectFunficAuthor, FunficDoesntExist {
+        return funficsService.updateFunfic(form, principal.getName());
     }
 
     @PostMapping("/delete-user-funfics")
     @Authorization(API_KEY_NAME)
-    public ResponseEntity<?> deleteUserFunfics(@RequestBody DeleteFunficsForm form, Principal principal) {
-        return funficsService.deleteFunfics(principal.getName(), form.getFunficIds())
-                ? ResponseEntity.ok().build()
-                : ResponseEntity.badRequest().build();
+    public ResponseEntity<?> deleteUserFunfics(@RequestBody DeleteFunficsForm form, Principal principal) throws IncorrectFunficAuthor {
+        funficsService.deleteFunfics(principal.getName(), form.getFunficIds());
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/user-funfics")
@@ -75,15 +73,11 @@ public class FunficsController {
 
     @PostMapping("/rate")
     @Authorization(API_KEY_NAME)
-    public ResponseEntity<?> rate(@RequestBody RateFunficForm form, Principal principal) {
-        return funficRatingService.rateFunfic(form, principal.getName())
-                ? ResponseEntity.ok().build()
-                : ResponseEntity.badRequest().build();
+    public ResponseEntity<?> rate(@RequestBody RateFunficForm form, Principal principal) throws UserNotFound, UserCannotRateFunfic {
+        funficRatingService.rateFunfic(form, principal.getName());
+        return ResponseEntity.ok().build();
     }
 
-    /**
-     * @return a list of funfic data structures that don't contain the content of funfics
-     */
     @GetMapping("/all-without-content")
     public List<FunficDto> funficsWithoutContent() {
         return funficsService.fetchAllFunfics();

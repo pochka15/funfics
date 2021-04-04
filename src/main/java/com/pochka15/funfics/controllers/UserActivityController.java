@@ -1,9 +1,12 @@
 package com.pochka15.funfics.controllers;
 
 import com.pochka15.funfics.dto.AuthenticationResult;
+import com.pochka15.funfics.dto.UserDto;
 import com.pochka15.funfics.dto.form.ChangePasswordForm;
 import com.pochka15.funfics.dto.form.CredentialsForm;
 import com.pochka15.funfics.dto.form.LoginForm;
+import com.pochka15.funfics.exceptions.PasswordsNotMatched;
+import com.pochka15.funfics.exceptions.UserNotFound;
 import com.pochka15.funfics.services.AuthenticationService;
 import com.pochka15.funfics.services.users.UserManagementService;
 import io.swagger.annotations.Authorization;
@@ -38,20 +41,16 @@ public class UserActivityController {
     }
 
     @PostMapping(path = "/register")
-    public ResponseEntity<?> register(@RequestBody @Valid CredentialsForm credentials) throws Exception {
-        try {
-            userManagementService.saveNewUser(credentials);
-        } catch (Exception e) {
-            throw new Exception("Invalid credentials");
-        }
-        return ResponseEntity.ok().build();
+    public UserDto register(@RequestBody @Valid CredentialsForm credentials) {
+        return userManagementService.saveNewUser(credentials);
     }
 
     @PostMapping("/change-password")
     @Authorization(API_KEY_NAME)
-    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordForm form, Principal principal) {
-        return userManagementService.changeUserPassword(principal.getName(), form)
-                ? ResponseEntity.ok().build()
-                : ResponseEntity.badRequest().build();
+    public ResponseEntity<?> changePassword(
+            @RequestBody ChangePasswordForm form, Principal principal)
+            throws UserNotFound, PasswordsNotMatched {
+        userManagementService.changeUserPassword(principal.getName(), form);
+        return ResponseEntity.ok().build();
     }
 }

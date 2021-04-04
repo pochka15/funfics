@@ -2,10 +2,12 @@ package com.pochka15.funfics.services.users;
 
 import com.pochka15.funfics.converters.users.CredentialsToUserConverter;
 import com.pochka15.funfics.converters.users.UserToUserDtoConverter;
-import com.pochka15.funfics.entities.user.User;
 import com.pochka15.funfics.dto.UserDto;
 import com.pochka15.funfics.dto.form.ChangePasswordForm;
 import com.pochka15.funfics.dto.form.CredentialsForm;
+import com.pochka15.funfics.entities.user.User;
+import com.pochka15.funfics.exceptions.PasswordsNotMatched;
+import com.pochka15.funfics.exceptions.UserNotFound;
 import com.pochka15.funfics.repositories.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -39,11 +41,12 @@ public class BaseUserManagementService implements UserManagementService {
 
     @Override
     @Transactional
-    public boolean changeUserPassword(String username, ChangePasswordForm form) {
-        var foundUser = userRepo.findByName(username);
-        return foundUser.isPresent()
-                && passwordEncoder.matches(form.getCurrentPassword(), foundUser.get().getPassword())
-                && updatePassword(foundUser.get(), form.getNewPassword());
+    public void changeUserPassword(String username, ChangePasswordForm form) throws UserNotFound, PasswordsNotMatched {
+        User user = userRepo.findByName(username)
+                .orElseThrow(() -> new UserNotFound("User is not found while changing the password"));
+        if (passwordEncoder.matches(form.getCurrentPassword(), user.getPassword()))
+            updatePassword(user, form.getNewPassword());
+        else throw new PasswordsNotMatched("Given password doesn't match the existing one");
     }
 
     @Override
@@ -53,9 +56,8 @@ public class BaseUserManagementService implements UserManagementService {
                 user -> user.getActivity().setLastLoginDate(LocalDateTime.now()));
     }
 
-    private boolean updatePassword(User user, String newPassword) {
+    private void updatePassword(User user, String newPassword) {
         user.setPassword(passwordEncoder.encode(newPassword));
-        return true;
     }
 
     @Override

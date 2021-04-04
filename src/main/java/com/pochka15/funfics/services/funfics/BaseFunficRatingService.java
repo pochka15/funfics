@@ -4,13 +4,14 @@ import com.pochka15.funfics.dto.form.RateFunficForm;
 import com.pochka15.funfics.entities.funfic.Funfic;
 import com.pochka15.funfics.entities.funfic.FunficRating;
 import com.pochka15.funfics.entities.user.User;
+import com.pochka15.funfics.exceptions.UserCannotRateFunfic;
+import com.pochka15.funfics.exceptions.UserNotFound;
 import com.pochka15.funfics.repositories.FunficRatingRepository;
 import com.pochka15.funfics.repositories.FunficsRepository;
 import com.pochka15.funfics.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Optional;
 
 @Service
 public class BaseFunficRatingService implements FunficRatingService {
@@ -43,16 +44,14 @@ public class BaseFunficRatingService implements FunficRatingService {
 
     @Override
     @Transactional
-    public boolean rateFunfic(RateFunficForm rateFunficForm, String username) {
+    public void rateFunfic(RateFunficForm rateFunficForm, String username) throws UserNotFound, UserCannotRateFunfic {
         final long funficId = rateFunficForm.getFunficId();
         if (checkIfUserCanRateFunfic(funficId, username)) {
-            final Optional<User> foundUser = userRepository.findByName(username);
-            if (foundUser.isPresent()) {
-                saveRating(funficId, rateFunficForm.getRating(), foundUser.get());
-                return true;
-            }
-        }
-        return false;
+            final User foundUser = userRepository
+                    .findByName(username)
+                    .orElseThrow(() -> new UserNotFound("Couldn't find the user while checking if he can rate a funfic"));
+            saveRating(funficId, rateFunficForm.getRating(), foundUser);
+        } else throw new UserCannotRateFunfic();
     }
 
     private void saveRating(Long funficId, float ratingValue, User userThatGaveRating) {

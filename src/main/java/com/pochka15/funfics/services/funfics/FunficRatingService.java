@@ -1,6 +1,8 @@
 package com.pochka15.funfics.services.funfics;
 
 import com.pochka15.funfics.dto.form.RateFunficForm;
+import com.pochka15.funfics.exceptions.UserCannotRateFunfic;
+import com.pochka15.funfics.exceptions.UserNotFound;
 
 public interface FunficRatingService {
     /**
@@ -13,9 +15,8 @@ public interface FunficRatingService {
     /**
      * @param rateFunficForm just input data
      * @param username       name of the user who rated the funfic
-     * @return <b>true</b> on success otherwise false
      */
-    boolean rateFunfic(RateFunficForm rateFunficForm, String username);
+    void rateFunfic(RateFunficForm rateFunficForm, String username) throws UserNotFound, UserCannotRateFunfic;
 
     float averageRating(long funficId);
 }

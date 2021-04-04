@@ -3,7 +3,7 @@ package com.pochka15.funfics.controllers.funfics.comments;
 import com.pochka15.funfics.dto.form.SaveCommentForm;
 import com.pochka15.funfics.dto.funfic.CommentDto;
 import com.pochka15.funfics.exceptions.FunficDoesntExist;
-import com.pochka15.funfics.exceptions.IncorrectAuthor;
+import com.pochka15.funfics.exceptions.IncorrectFunficAuthor;
 import com.pochka15.funfics.services.funfics.CommentsService;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -25,7 +25,7 @@ public class FunficCommentsController {
     @MessageMapping("/comments/save")
     @SendTo("/sock/comments")
     public CommentDto saveComment(@RequestBody @Valid SaveCommentForm comment, Principal principal)
-            throws FunficDoesntExist, IncorrectAuthor {
+            throws FunficDoesntExist, IncorrectFunficAuthor {
         return commentsService.save(comment, principal.getName());
     }
 
