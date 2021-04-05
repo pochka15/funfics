@@ -44,13 +44,6 @@ public class BaseFunficsService implements FunficsService {
     }
 
     @Override
-    public List<FunficDto> fetchAllFunfics() {
-        return funficsRepository.findAll().stream()
-                .map(funficToDtoConverter::convert)
-                .collect(Collectors.toList());
-    }
-
-    @Override
     @Transactional
     public FunficDto saveFunfic(SaveFunficForm form, String authorName) throws UserNotFound {
         final User user = userRepository.findByName(authorName)

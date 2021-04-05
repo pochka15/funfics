@@ -1,13 +1,15 @@
 package com.pochka15.funfics.converters.funfics;
 
-import com.pochka15.funfics.entities.funfic.Funfic;
 import com.pochka15.funfics.dto.funfic.FunficDto;
+import com.pochka15.funfics.entities.funfic.Funfic;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 @Component
 public class FunficToDtoConverter implements Converter<Funfic, FunficDto> {
     @Override
+    @NonNull
     public FunficDto convert(Funfic source) {
         return FunficDto.builder()
                 .name(source.getName())

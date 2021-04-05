@@ -27,3 +27,9 @@ This is a drill project where I tried to make a basic service for creating posts
 - Websocket comments
 - Admin page for managing users
 - Funfics searchbar
+
+## Notes
+
+- There is no requirement to make very efficient Db queries, so there can even exist *N+1 problems*. I've added
+  a [pending refactoring branch](https://github.com/pochka15/funfics/tree/pending-refactoring). I hope I find time for
+  these refactorings...

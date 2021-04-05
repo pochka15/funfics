@@ -13,11 +13,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FunficsService {
-    /**
-     * @return a list of funfic data structures that don't contain the content of funfics
-     */
-    List<FunficDto> fetchAllFunfics();
-
     FunficDto saveFunfic(SaveFunficForm form, String authorName) throws UserNotFound;
 
     Optional<FunficWithContentDto> fetchFunficById(long id);

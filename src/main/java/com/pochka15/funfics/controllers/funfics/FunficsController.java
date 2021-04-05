@@ -2,10 +2,7 @@ package com.pochka15.funfics.controllers.funfics;
 
 import com.pochka15.funfics.dto.form.DeleteFunficsForm;
 import com.pochka15.funfics.dto.form.RateFunficForm;
-import com.pochka15.funfics.dto.funfic.FunficDto;
-import com.pochka15.funfics.dto.funfic.FunficWithContentDto;
-import com.pochka15.funfics.dto.funfic.SaveFunficForm;
-import com.pochka15.funfics.dto.funfic.UpdateFunficForm;
+import com.pochka15.funfics.dto.funfic.*;
 import com.pochka15.funfics.exceptions.FunficDoesntExist;
 import com.pochka15.funfics.exceptions.IncorrectFunficAuthor;
 import com.pochka15.funfics.exceptions.UserCannotRateFunfic;
@@ -79,8 +76,8 @@ public class FunficsController {
     }
 
     @GetMapping("/all-without-content")
-    public List<FunficDto> funficsWithoutContent() {
-        return funficsService.fetchAllFunfics();
+    public List<FunficWithRatingDto> funficsWithoutContent() {
+        return funficRatingService.fetchAllFunfics();
     }
 
     @GetMapping("/{funficId}")

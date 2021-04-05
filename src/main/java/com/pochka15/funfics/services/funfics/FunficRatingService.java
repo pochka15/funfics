@@ -1,8 +1,11 @@
 package com.pochka15.funfics.services.funfics;
 
 import com.pochka15.funfics.dto.form.RateFunficForm;
+import com.pochka15.funfics.dto.funfic.FunficWithRatingDto;
 import com.pochka15.funfics.exceptions.UserCannotRateFunfic;
 import com.pochka15.funfics.exceptions.UserNotFound;
+
+import java.util.List;
 
 public interface FunficRatingService {
     /**
@@ -19,4 +22,9 @@ public interface FunficRatingService {
     void rateFunfic(RateFunficForm rateFunficForm, String username) throws UserNotFound, UserCannotRateFunfic;
 
     float averageRating(long funficId);
+
+    /**
+     * @return a list of funfic data structures that don't contain the content of funfics
+     */
+    List<FunficWithRatingDto> fetchAllFunfics();
 }
