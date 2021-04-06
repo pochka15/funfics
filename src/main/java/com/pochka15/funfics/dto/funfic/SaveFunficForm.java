@@ -1,6 +1,6 @@
 package com.pochka15.funfics.dto.funfic;
 
-import com.pochka15.funfics.domain.funfic.Genre;
+import com.pochka15.funfics.entities.funfic.Genre;
 import lombok.Data;
 
 import java.util.Set;

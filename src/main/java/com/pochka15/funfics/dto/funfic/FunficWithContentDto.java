@@ -1,6 +1,6 @@
 package com.pochka15.funfics.dto.funfic;
 
-import com.pochka15.funfics.domain.funfic.Genre;
+import com.pochka15.funfics.entities.funfic.Genre;
 import lombok.Builder;
 import lombok.Data;
 
@@ -21,7 +21,6 @@ public class FunficWithContentDto {
 
     private String name;
     private String description;
-    private float rating;
     private String content;
     private String author;
 }
