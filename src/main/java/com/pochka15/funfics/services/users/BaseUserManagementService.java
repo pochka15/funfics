@@ -2,7 +2,7 @@ package com.pochka15.funfics.services.users;
 
 import com.pochka15.funfics.converters.users.CredentialsToUserConverter;
 import com.pochka15.funfics.converters.users.UserToUserDtoConverter;
-import com.pochka15.funfics.dto.UserDto;
+import com.pochka15.funfics.dto.UserWithoutActivityDto;
 import com.pochka15.funfics.dto.form.ChangePasswordForm;
 import com.pochka15.funfics.dto.form.CredentialsForm;
 import com.pochka15.funfics.entities.user.User;
@@ -35,12 +35,7 @@ public class BaseUserManagementService implements UserManagementService {
 
 
     @Override
-    public Optional<UserDto> findByName(String name) {
-//        TODO(@pochka15): Refactor. It fetches the user and activity
-//        set fetch activity as EAGER
-//        OR fetch with joined activity
-//        OR don't fetch activity
-//        + Maybe I need to rename the dto to smth. like fetch with the activity
+    public Optional<UserWithoutActivityDto> findByName(String name) {
         return userRepo.findByName(name).map(userToUserDtoConverter::convert);
     }
 
@@ -66,7 +61,7 @@ public class BaseUserManagementService implements UserManagementService {
     }
 
     @Override
-    public UserDto saveNewUser(CredentialsForm form) {
+    public UserWithoutActivityDto saveNewUser(CredentialsForm form) {
         User user = credentialsToUserConverter.convert(form);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userToUserDtoConverter.convert(userRepo.save(user));

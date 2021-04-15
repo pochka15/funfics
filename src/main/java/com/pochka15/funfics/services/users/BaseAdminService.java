@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.pochka15.funfics.repositories.UserRepository.*;
+
 @Service
 public class BaseAdminService implements AdminService {
     private final UserRepository userRepository;
@@ -31,7 +33,9 @@ public class BaseAdminService implements AdminService {
     @Override
     @Transactional
     public List<UserForAdmin> allUsers() {
-        return userRepository.findAll().stream()
+        return userRepository
+                .findAll(withActivity().and(withRoles()))
+                .stream()
                 .map(userToUserForAdminTableDtoConverter::convert)
                 .collect(Collectors.toList());
     }
@@ -39,9 +43,10 @@ public class BaseAdminService implements AdminService {
     @Override
     @Transactional
     public UserForAdmin fetchUserById(Long id) throws UserNotFound {
-        return userToUserForAdminTableDtoConverter.convert(
-                utilityUserService.getUserOrThrow(
-                        id, "Couldn't find the user while fetching him for the admin"));
+        final User user = userRepository
+                .findOne(id(id).and(withActivity()).and(withRoles()))
+                .orElseThrow(() -> new UserNotFound("Couldn't find the user while fetching him for the admin"));
+        return userToUserForAdminTableDtoConverter.convert(user);
     }
 
     @Override

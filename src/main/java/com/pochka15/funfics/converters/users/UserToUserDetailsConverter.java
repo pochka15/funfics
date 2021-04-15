@@ -1,10 +1,14 @@
 package com.pochka15.funfics.converters.users;
 
+import com.pochka15.funfics.entities.user.Role;
 import com.pochka15.funfics.entities.user.User;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -25,10 +29,13 @@ public class UserToUserDetailsConverter implements Converter<User, UserDetails> 
                 true,
                 true,
                 true,
-                user.getRoles()
-                        .stream()
-                        .map(authorityConverter::convert)
-                        .collect(Collectors.toList())
+                mapToAuthorities(user.getRoles())
         );
+    }
+
+    private List<GrantedAuthority> mapToAuthorities(Set<Role> roles) {
+        return roles.stream()
+                .map(authorityConverter::convert)
+                .collect(Collectors.toList());
     }
 }

@@ -3,13 +3,13 @@ package com.pochka15.funfics.dto;
 import lombok.Data;
 
 @Data
-public class UserDto {
+public class UserWithoutActivityDto {
     private final boolean enabled;
     private String name;
     private Long id;
     private String email;
 
-    public UserDto(String name, Long id, String email, boolean enabled) {
+    public UserWithoutActivityDto(String name, Long id, String email, boolean enabled) {
         this.name = name;
         this.id = id;
         this.email = email;

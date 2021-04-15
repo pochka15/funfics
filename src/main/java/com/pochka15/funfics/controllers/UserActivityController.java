@@ -1,7 +1,7 @@
 package com.pochka15.funfics.controllers;
 
 import com.pochka15.funfics.dto.AuthenticationResult;
-import com.pochka15.funfics.dto.UserDto;
+import com.pochka15.funfics.dto.UserWithoutActivityDto;
 import com.pochka15.funfics.dto.form.ChangePasswordForm;
 import com.pochka15.funfics.dto.form.CredentialsForm;
 import com.pochka15.funfics.dto.form.LoginForm;
@@ -41,7 +41,7 @@ public class UserActivityController {
     }
 
     @PostMapping(path = "/register")
-    public UserDto register(@RequestBody @Valid CredentialsForm credentials) {
+    public UserWithoutActivityDto register(@RequestBody @Valid CredentialsForm credentials) {
         return userManagementService.saveNewUser(credentials);
     }
 

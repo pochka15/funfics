@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
+import static com.pochka15.funfics.repositories.UserRepository.name;
+import static com.pochka15.funfics.repositories.UserRepository.withRoles;
+
 /**
  * Service for loading <i>UserDetails</i> using the <i>UserRepository</i>
  */
@@ -27,10 +30,8 @@ public class DbUserDetailsService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        //                TODO(@pochka15): resolve n+1
-        // 2 selects: user and user role
         User user = userRepo
-                .findByName(username)
+                .findOne(name(username).and(withRoles()))
                 .orElseThrow(() -> new UsernameNotFoundException("Couldn't find the user " + username));
         return userToUserDetailsConverter.convert(user);
     }

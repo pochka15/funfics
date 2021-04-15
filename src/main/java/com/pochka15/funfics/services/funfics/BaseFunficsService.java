@@ -18,10 +18,10 @@ import com.pochka15.funfics.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.pochka15.funfics.repositories.FunficsRepository.*;
 
 @Service
 public class BaseFunficsService implements FunficsService {
@@ -46,16 +46,18 @@ public class BaseFunficsService implements FunficsService {
     @Override
     @Transactional
     public FunficDto saveFunfic(SaveFunficForm form, String authorName) throws UserNotFound {
-        final User user = userRepository.findByName(authorName)
+        final Funfic funfic = funficFormToFunficConverter.convert(form);
+        final User author = userRepository.findByName(authorName)
                 .orElseThrow(() -> new UserNotFound("User wasn't found while saving the funfic"));
-        Funfic funfic = funficFormToFunficConverter.convert(form);
-        funfic.setAuthor(user);
+        funfic.setAuthor(author);
         return funficToDtoConverter.convert(funficsRepository.save(funfic));
     }
 
     @Override
     public Optional<FunficWithContentDto> fetchFunficById(long id) {
-        return funficsRepository.findById(id).map(funficToFunficWithContentConverter::convert);
+        return funficsRepository
+                .findOne(id(id).and(withFunficContent()).and(withAuthor()).and(withTags()))
+                .map(funficToFunficWithContentConverter::convert);
     }
 
     @Override
@@ -96,15 +98,13 @@ public class BaseFunficsService implements FunficsService {
 
     @Override
     public List<FunficDto> fetchFunficsByAuthor(String authorName) {
-        final Optional<User> foundUser = userRepository.findByName(authorName);
-        return foundUser
-                .map(this::findUserFunfics)
-                .orElseGet(List::of);
-    }
-
-    private List<FunficDto> findUserFunfics(User user) {
-        return funficsRepository.findByAuthor(user)
+        final Set<Long> existingIds = new HashSet<>();
+        return funficsRepository.findAll(
+                whereAuthorEquals(authorName)
+                        .and(withAuthor())
+                        .and(withTags()))
                 .stream()
+                .filter(funfic -> existingIds.add(funfic.getId()))
                 .map(funficToDtoConverter::convert)
                 .collect(Collectors.toList());
     }

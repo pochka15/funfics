@@ -28,7 +28,7 @@ public class Funfic {
     @Enumerated(EnumType.STRING)
     private Genre genre;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.LAZY)
     @Builder.Default
     private Set<String> tags = Set.of();
 

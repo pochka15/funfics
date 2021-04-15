@@ -15,8 +15,12 @@ import com.pochka15.funfics.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+
+import static com.pochka15.funfics.repositories.FunficsRepository.*;
 
 @Service
 public class BaseFunficRatingService implements FunficRatingService {
@@ -86,17 +90,26 @@ public class BaseFunficRatingService implements FunficRatingService {
 
     @Override
     public List<FunficWithRatingDto> fetchAllFunfics() {
-        return funficsRepository.findAll().stream()
-                .map((val) -> {
-                    final FunficDto dto = funficToDtoConverter.convert(val);
-                    return withRating(dto);
-                })
+        HashSet<Long> existingIds = new HashSet<>();
+        return funficsRepository.findAll(withRatings().and(withTags().and(withAuthor())))
+                .stream()
+                .filter(funfic -> existingIds.add(funfic.getId()))
+                .map(it -> withRating(funficToDtoConverter.convert(it), calculateAverageRating(it)))
                 .collect(Collectors.toList());
     }
 
-    private FunficWithRatingDto withRating(FunficDto dto) {
+    private float calculateAverageRating(Funfic funfic) {
+        AtomicInteger counter = new AtomicInteger();
+        final float ratingSum = funfic.getRatings().stream()
+                .map(FunficRating::getValue)
+                .peek(v -> counter.getAndIncrement())
+                .reduce(Float::sum).orElse(0f);
+        return ratingSum == 0 ? 0 : ratingSum / counter.get();
+    }
+
+    private FunficWithRatingDto withRating(FunficDto dto, float rating) {
         return new FunficWithRatingDto(
-                averageRating(dto.getId()),
+                rating,
                 dto.getId(),
                 dto.getGenre(),
                 dto.getTags(),

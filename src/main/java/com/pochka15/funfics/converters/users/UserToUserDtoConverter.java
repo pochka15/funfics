@@ -1,14 +1,14 @@
 package com.pochka15.funfics.converters.users;
 
-import com.pochka15.funfics.dto.UserDto;
+import com.pochka15.funfics.dto.UserWithoutActivityDto;
 import com.pochka15.funfics.entities.user.User;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserToUserDtoConverter implements Converter<User, UserDto> {
+public class UserToUserDtoConverter implements Converter<User, UserWithoutActivityDto> {
     @Override
-    public UserDto convert(User user) {
-        return new UserDto(user.getName(), user.getId(), user.getEmail(), user.isEnabled());
+    public UserWithoutActivityDto convert(User user) {
+        return new UserWithoutActivityDto(user.getName(), user.getId(), user.getEmail(), user.isEnabled());
     }
 }
