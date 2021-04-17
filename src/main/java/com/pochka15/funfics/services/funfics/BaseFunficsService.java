@@ -9,19 +9,23 @@ import com.pochka15.funfics.dto.funfic.SaveFunficForm;
 import com.pochka15.funfics.dto.funfic.UpdateFunficForm;
 import com.pochka15.funfics.entities.funfic.Funfic;
 import com.pochka15.funfics.entities.funfic.FunficContent;
+import com.pochka15.funfics.entities.funfic.Funfic_;
 import com.pochka15.funfics.entities.user.User;
+import com.pochka15.funfics.entities.user.User_;
 import com.pochka15.funfics.exceptions.FunficDoesntExist;
 import com.pochka15.funfics.exceptions.IncorrectFunficAuthor;
 import com.pochka15.funfics.exceptions.UserNotFound;
 import com.pochka15.funfics.repositories.FunficsRepository;
 import com.pochka15.funfics.repositories.UserRepository;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.JoinType;
 import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.pochka15.funfics.repositories.FunficsRepository.*;
+import static com.pochka15.funfics.utils.db.JpaUtils.with;
 
 @Service
 public class BaseFunficsService implements FunficsService {
@@ -56,8 +60,18 @@ public class BaseFunficsService implements FunficsService {
     @Override
     public Optional<FunficWithContentDto> fetchFunficById(long id) {
         return funficsRepository
-                .findOne(id(id).and(withFunficContent()).and(withAuthor()).and(withTags()))
+                .findOne(id(id).and(withLeftJoined(Funfic_.FUNFIC_CONTENT))
+                                 .and(withLeftJoined(Funfic_.TAGS))
+                                 .and(withLeftJoined(Funfic_.AUTHOR)))
                 .map(funficToFunficWithContentConverter::convert);
+    }
+
+    private static Specification<Funfic> id(Long id) {
+        return (root, cq, cb) -> cb.equal(root.get(Funfic_.ID), id);
+    }
+
+    private static Specification<Funfic> withLeftJoined(String fieldName) {
+        return with(fieldName, JoinType.LEFT);
     }
 
     @Override
@@ -101,11 +115,16 @@ public class BaseFunficsService implements FunficsService {
         final Set<Long> existingIds = new HashSet<>();
         return funficsRepository.findAll(
                 whereAuthorEquals(authorName)
-                        .and(withAuthor())
-                        .and(withTags()))
+                        .and(with(Funfic_.AUTHOR, JoinType.LEFT))
+                        .and(with(Funfic_.TAGS, JoinType.LEFT)))
                 .stream()
                 .filter(funfic -> existingIds.add(funfic.getId()))
                 .map(funficToDtoConverter::convert)
                 .collect(Collectors.toList());
+    }
+
+    private static Specification<Funfic> whereAuthorEquals(String authorName) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder
+                .equal(root.get(Funfic_.AUTHOR).get(User_.NAME), authorName);
     }
 }

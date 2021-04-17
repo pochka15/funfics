@@ -6,21 +6,24 @@ import com.pochka15.funfics.dto.funfic.FunficDto;
 import com.pochka15.funfics.dto.funfic.FunficWithRatingDto;
 import com.pochka15.funfics.entities.funfic.Funfic;
 import com.pochka15.funfics.entities.funfic.FunficRating;
+import com.pochka15.funfics.entities.funfic.Funfic_;
 import com.pochka15.funfics.entities.user.User;
 import com.pochka15.funfics.exceptions.UserCannotRateFunfic;
 import com.pochka15.funfics.exceptions.UserNotFound;
 import com.pochka15.funfics.repositories.FunficRatingRepository;
 import com.pochka15.funfics.repositories.FunficsRepository;
 import com.pochka15.funfics.repositories.UserRepository;
+import com.pochka15.funfics.utils.db.JpaUtils;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.JoinType;
 import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import static com.pochka15.funfics.repositories.FunficsRepository.*;
+import static com.pochka15.funfics.utils.db.JpaUtils.with;
 
 @Service
 public class BaseFunficRatingService implements FunficRatingService {
@@ -91,7 +94,10 @@ public class BaseFunficRatingService implements FunficRatingService {
     @Override
     public List<FunficWithRatingDto> fetchAllFunfics() {
         HashSet<Long> existingIds = new HashSet<>();
-        return funficsRepository.findAll(withRatings().and(withTags().and(withAuthor())))
+        return funficsRepository.findAll(
+                JpaUtils.<Funfic>with(Funfic_.RATINGS, JoinType.LEFT)
+                        .and(with(Funfic_.TAGS, JoinType.LEFT))
+                        .and(with(Funfic_.AUTHOR, JoinType.LEFT)))
                 .stream()
                 .filter(funfic -> existingIds.add(funfic.getId()))
                 .map(it -> withRating(funficToDtoConverter.convert(it), calculateAverageRating(it)))
