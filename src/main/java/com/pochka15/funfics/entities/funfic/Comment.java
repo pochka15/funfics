@@ -13,6 +13,7 @@ import javax.persistence.*;
 @Getter
 @EqualsAndHashCode(of = {"id", "content"})
 @ToString(of = {"id", "content"})
+@Table(name = "comments")
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,6 +26,6 @@ public class Comment {
     private User author;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "funfic_id")
+    @JoinColumn(name = "funfic_id", nullable = false)
     private Funfic funfic;
 }

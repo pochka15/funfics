@@ -20,6 +20,7 @@ import java.util.Set;
 @Indexed
 @EqualsAndHashCode(of = {"id", "genre", "tags", "name", "description"})
 @ToString(of = {"id", "genre", "tags", "name", "description"})
+@Table(name = "funfics")
 public class Funfic {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -45,11 +46,11 @@ public class Funfic {
 
     private String description;
 
-    @OneToMany(mappedBy = "funfic", orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "funfic", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
     private List<Comment> comments = List.of();
 
-    @OneToMany(mappedBy = "funfic", orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "funfic", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
     private List<FunficRating> ratings = List.of();
 }

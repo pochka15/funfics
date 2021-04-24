@@ -16,7 +16,7 @@ import java.util.Set;
 @Getter
 @EqualsAndHashCode(of = {"id", "name", "isEnabled", "email"})
 @ToString(of = {"id", "name", "isEnabled", "email"})
-@Table(name = "user")
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -40,11 +40,11 @@ public class User {
     @Builder.Default
     private UserActivity activity = new UserActivity();
 
-    @OneToMany(mappedBy = "author", orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @Builder.Default
     private List<Funfic> funfics = List.of();
 
-    @OneToMany(mappedBy = "author", orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @Builder.Default
     private List<Comment> comments = List.of();
 }

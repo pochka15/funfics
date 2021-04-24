@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Getter
 @EqualsAndHashCode(of = {"id", "value"})
 @ToString(of = {"id", "value"})
-@Table(name = "funfic_rating")
+@Table(name = "funfic_ratings")
 public class FunficRating {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

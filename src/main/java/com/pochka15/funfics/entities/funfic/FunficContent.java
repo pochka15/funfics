@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "funfic_content")
+@Table(name = "funfic_contents")
 public class FunficContent {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
